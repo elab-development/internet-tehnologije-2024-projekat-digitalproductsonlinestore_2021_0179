@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('file_path');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+            
         });
     }
 
