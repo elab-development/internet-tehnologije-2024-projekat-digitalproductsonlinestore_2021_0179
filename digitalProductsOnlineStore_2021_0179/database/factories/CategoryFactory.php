@@ -19,9 +19,13 @@ class CategoryFactory extends Factory
     
     public function definition(): array
     {
+        $categories = [
+            'E-books', 'Photos', 'Videos', 'Digital Art'
+        ];
         return [
-            'name' => $this->faker->unique()->word(),
-            'description' => $this->faker->sentence(),
+            'name' => $this->faker->randomElement($categories),
+            //'description' => $this->faker->sentence(),
+            // 'product_id' => $this->faker->numberBetween(1, 20),
 
         ];
     }
