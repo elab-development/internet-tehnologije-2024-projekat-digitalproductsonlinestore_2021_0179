@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description');
             $table->float('price');
             $table->string('file_path');
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('category_id');
             $table->timestamps();
             
         });
