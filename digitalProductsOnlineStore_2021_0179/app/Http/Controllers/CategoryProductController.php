@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class CategoryProductController extends Controller
 {
+
     public function index($category_id){
         $products = Product::get()->where('category_id', $category_id);
         if(is_null($products)){

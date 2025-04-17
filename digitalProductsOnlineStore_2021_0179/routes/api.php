@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\ProductTestController;
 use App\Http\Controllers\CategoryProductController;
 
@@ -27,8 +28,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Route::get('/users', [UserController::class, 'index']);
 // Route::get('/users/{id}', [UserController::class, 'show']);
 
-Route::resource('/products', ProductController::class);
+// Route::resource('/products', ProductController::class);
 
 // Route::get('/categories/{id}/products', [CategoryProductController::class, 'index'])->name('categories.products.index');
 
 Route::resource('categories.products', CategoryProductController::class)->only('index');
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
