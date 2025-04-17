@@ -5,8 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\ProductTestController;
-use App\Http\Controllers\CategoryProductController;
+use App\Http\Controllers\ProductCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +21,13 @@ use App\Http\Controllers\CategoryProductController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-// Route::get('/products/{id}', [ProductTestController::class, 'show']);
-// Route::get('/products', [ProductTestController::class, 'index']);
+ Route::get('/products', [ProductController::class, 'index']);
+ Route::get('/products/{id}', [ProductController::class, 'show']);
+ Route::post('/products', [ProductController::class, 'store']);
+ Route::put('/products/{id}', [ProductController::class, 'update']);
+ Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+
+
 
 // Route::get('/users', [UserController::class, 'index']);
 // Route::get('/users/{id}', [UserController::class, 'show']);
@@ -32,9 +36,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Route::get('/categories/{id}/products', [CategoryProductController::class, 'index'])->name('categories.products.index');
 
-Route::resource('categories.products', CategoryProductController::class)->only('index');
+Route::resource('categories.products', ProductCategoryController::class)->only('index');
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+Route::middleware('auth:sanctum')->group(function(){
+    Route::get('product-category', [ProductCategoryController::class, 'index']);
+});
 

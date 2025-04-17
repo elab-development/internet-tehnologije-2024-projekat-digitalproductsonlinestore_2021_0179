@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->float('price');
-            $table->string('file_path');
+            $table->string('file_path')->nullable();
             $table->unsignedBigInteger('category_id');
             $table->timestamps();
             
