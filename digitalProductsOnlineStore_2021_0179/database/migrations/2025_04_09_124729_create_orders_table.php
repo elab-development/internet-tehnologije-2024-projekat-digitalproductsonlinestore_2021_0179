@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->float('total_price');
-            $table->string('status');
+            $table->string('status')->default('completed');
             $table->string('notes');
             $table->timestamps();
             
