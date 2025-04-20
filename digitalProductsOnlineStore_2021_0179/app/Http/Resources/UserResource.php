@@ -12,6 +12,7 @@ class UserResource extends JsonResource
      *
      * @return array<string, mixed>
      */
+    public static $wrap = 'user';
     public function toArray(Request $request): array
     {
         // return parent::toArray($request);
@@ -21,9 +22,7 @@ class UserResource extends JsonResource
             'name'=>$this->resource->name,
             'email'=>$this->resource->email,
             'address'=>$this->resource->address,
-            'email_verified_at' => $this->email_verified_at,
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
+          
         ];
     }
 }

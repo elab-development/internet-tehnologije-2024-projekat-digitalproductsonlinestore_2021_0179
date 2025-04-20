@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,9 +14,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        // $users = User::all();
-        // return $users;
-        return UserResource::collection(User::all());
+        $users = User::all();
+        return new UserCollection($users);
     }
 
     /**
@@ -40,7 +40,7 @@ class UserController extends Controller
     public function show($user_id)
     {
         $user = User::find($user_id);
-        if(is_null($user)){
+        if (is_null($user)) {
             return response()->json("Data not found", 404);
         }
         return response()->json($user);
@@ -68,5 +68,15 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+    }
+    public function getOrders($userId)
+    {
+        $user = User::with(['orders.products'])->find($userId);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        return response()->json($user->orders, 200);
     }
 }

@@ -35,12 +35,12 @@ class CategoryController extends Controller
     public function show($id)
     {
         $category = Category::find($id);
-        
+
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);
         }
-    
-     return new CategoryResource($category);
+
+        return new CategoryResource($category);
     }
 
 
@@ -51,8 +51,8 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
 
-        if(!$category){
-            return response()->json(['message'=>'Category not found'], 404);
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
         }
         $validated = $request->validate([
             'name' => 'string|max:255',
@@ -69,13 +69,22 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
 
-         if (!$category) {
-             return response()->json(['message' => 'Category not found'], 404);
-         }
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
 
         $category->delete();
 
-         return response()->json(['message' => 'Category deleted successfully'], 200);
+        return response()->json(['message' => 'Category deleted successfully'], 200);
+    }
+    public function getProducts($categoryId)
+    {
+        $category = Category::find($categoryId);
 
+        if (!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+
+        return response()->json($category->products, 200);
     }
 }

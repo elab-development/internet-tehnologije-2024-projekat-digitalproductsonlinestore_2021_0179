@@ -24,8 +24,6 @@ class CategoryFactory extends Factory
         ];
         return [
             'name' => $this->faker->randomElement($categories),
-            //'description' => $this->faker->sentence(),
-            // 'product_id' => $this->faker->numberBetween(1, 20),
 
         ];
     }

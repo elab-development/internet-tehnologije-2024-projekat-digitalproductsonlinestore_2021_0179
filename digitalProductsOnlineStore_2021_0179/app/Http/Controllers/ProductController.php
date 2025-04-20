@@ -10,13 +10,14 @@ use App\Http\Resources\ProductCollection;
 
 class ProductController extends Controller
 {
-    public function index(){
+    public function index()
+    {
 
         $products = Product::all();
-        return new ProductCollection($products);  
-
+        return new ProductCollection($products);
     }
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -26,22 +27,23 @@ class ProductController extends Controller
         $product = Product::create($validated);
         return  new ProductResource($product);
     }
-    public function show($id){
-        
-            $product = Product::find($id);
-        
-            if (!$product) {
-                return response()->json(['message' => 'Product not found'], 404);
-            }
-        
-         return new ProductResource($product);
-        
-    }
-    public function update(Request $request,  $id){
+    public function show($id)
+    {
+
         $product = Product::find($id);
 
-        if(!$product){
-            return response()->json(['message'=>'Product not found'], 404);
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        return new ProductResource($product);
+    }
+    public function update(Request $request,  $id)
+    {
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
         }
         $validated = $request->validate([
             'name' => 'string|max:255',
@@ -55,18 +57,40 @@ class ProductController extends Controller
     }
 
 
-    public function destroy($id){
-    
+    public function destroy($id)
+    {
+
         $product = Product::find($id);
 
-         if (!$product) {
-             return response()->json(['message' => 'Product not found'], 404);
-         }
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
 
         $product->delete();
 
-         return response()->json(['message' => 'Product deleted successfully'], 200);
+        return response()->json(['message' => 'Product deleted successfully'], 200);
+    }
+    public function search(Request $request)
+    {
+        $query = $request->input('query'); // Dobijanje ključne reči iz zahteva
 
-        
+        $products = Product::where('name', 'LIKE', '%' . $query . '%')->get();
+
+        if ($products->isEmpty()) {
+            return response()->json(['message' => 'No products found'], 404);
+        }
+
+        return response()->json($products, 200);
+    }
+    public function getTopSellingProducts()
+    {
+        $products = Product::with('orders')
+            ->get()
+            ->sortByDesc(function ($product) {
+                return $product->orders->sum('pivot.quantity'); // Računanje ukupne prodaje
+            })
+            ->take(5); // Vraća prvih 5 proizvoda
+
+        return response()->json($products, 200);
     }
 }
