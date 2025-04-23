@@ -14,8 +14,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-        return new UserCollection($users);
+        // $users = User::all();
+        // return new UserCollection($users);
     }
 
     /**
@@ -39,11 +39,11 @@ class UserController extends Controller
      */
     public function show($user_id)
     {
-        $user = User::find($user_id);
-        if (is_null($user)) {
-            return response()->json("Data not found", 404);
-        }
-        return response()->json($user);
+        // $user = User::find($user_id);
+        // if (is_null($user)) {
+        //     return response()->json("Data not found", 404);
+        // }
+        // return new UserResource($user);
     }
 
     /**
@@ -77,6 +77,31 @@ class UserController extends Controller
             return response()->json(['error' => 'User not found'], 404);
         }
 
-        return response()->json($user->orders, 200);
+        $orders = $user->orders->map(function ($order) {
+            return [
+                'order_id' => $order->id,
+                'status' => $order->status,
+                'total_price' => $order->total_price,
+                'created_at' => $order->created_at,
+                'products' => $order->products->map(function ($product) {
+                    return [
+                        'id' => $product->id,
+                        'name' => $product->name,
+                        'price' => $product->price,
+                        'quantity' => $product->pivot->quantity,
+                    ];
+                }),
+               
+            ];
+        });
+        return response()->json([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+            'orders' => $orders,
+        ], 200);
+          
     }
 }

@@ -22,7 +22,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'exists:categories,id',
         ]);
         $product = Product::create($validated);
         return  new ProductResource($product);
@@ -80,17 +80,8 @@ class ProductController extends Controller
             return response()->json(['message' => 'No products found'], 404);
         }
 
-        return response()->json($products, 200);
+        return ProductResource::collection($products);
     }
-    public function getTopSellingProducts()
-    {
-        $products = Product::with('orders')
-            ->get()
-            ->sortByDesc(function ($product) {
-                return $product->orders->sum('pivot.quantity'); // Računanje ukupne prodaje
-            })
-            ->take(5); // Vraća prvih 5 proizvoda
-
-        return response()->json($products, 200);
-    }
+    
+   
 }

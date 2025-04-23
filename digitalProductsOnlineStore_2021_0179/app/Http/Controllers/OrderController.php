@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\OrderCollection;
-use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Resources\OrderResource;
+use App\Http\Resources\OrderCollection;
 
 class OrderController extends Controller
 {
@@ -32,13 +33,32 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id', 
+            'user_id' => 'required|exists:users,id',
+            'status' => 'required|string|in:pending,completed,cancelled',
+            'notes' => 'nullable|string|max:255',
             'products' => 'required|array',
-            'product.*.id' => 'required|exists:products,id', 
-            'products.*.quantity' => 'required|integer|min:1', 
-            'total_price' => 'required|numeric|min:0',
+            'products.*.id' => 'required|exists:products,id',
+            'products.*.quantity' => 'required|integer|min:1',
+
         ]);
-        $order = Order::create($validated);
+        $order = Order::create([
+            'status' => $validated['status'],
+            'notes' => $validated['notes'],
+            'user_id' => $validated['user_id'],
+            'total_price' => 0, // Privremeno, izračunaćemo kasnije
+        ]);
+        $totalPrice = 0;
+        foreach ($validated['products'] as $product) {
+            $order->products()->attach($product['id'], ['quantity' => $product['quantity']]);
+
+            // Izračunavamo ukupnu cenu
+            $productModel = Product::find($product['id']);
+            $totalPrice += $productModel->price * $product['quantity'];
+        }
+
+        // Ažuriramo ukupnu cenu narudžbine
+        $order->update(['total_price' => $totalPrice]);
+
         return new OrderResource($order);
     }
 
@@ -48,8 +68,8 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::find($id);
-        if(!$order){
-            return response()->json(['message'=>'Order not found'], 404);
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
         }
         return new OrderResource($order);
     }
@@ -68,18 +88,29 @@ class OrderController extends Controller
     public function update(Request $request, string $id)
     {
         $order = Order::find($id);
-        if(!$order){
-            return response()->json(['message'=>'Order not found'], 404);
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
         }
         $validated = $request->validate([
-            //'user_id' => 'exists:users,id', 
+            'user_id' => 'exists:users,id',
+            'status' => 'string|in:pending,completed,cancelled',
+            'notes' => 'nullable|string|max:255',
             'products' => 'array',
-            'product.*.id' => 'exists:products,id', 
-            'products.*.quantity' => 'integer|min:1', 
+            'product.*.id' => 'exists:products,id',
+            'products.*.quantity' => 'integer|min:1',
             'total_price' => 'numeric|min:0',
         ]);
         $order->update($validated);
-        return new OrderResource($validated);
+
+        // Ako su proizvodi prosleđeni, ažuriramo pivot tabelu
+        if (isset($validated['products'])) {
+            $order->products()->detach(); // Uklanjamo sve postojeće proizvode
+            foreach ($validated['products'] as $product) {
+                $order->products()->attach($product['id'], ['quantity' => $product['quantity']]);
+            }
+        }
+
+        return new OrderResource($order->fresh());
     }
 
     /**
@@ -88,8 +119,8 @@ class OrderController extends Controller
     public function destroy($id)
     {
         $order = Order::find($id);
-        if(!$order){
-            return response()->json(['message'=>'Order not found'], 404);
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
         }
         $order->delete();
         return response()->json(['message' => 'Order deleted successfully'], 200);

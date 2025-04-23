@@ -21,8 +21,10 @@ class ProductResource extends JsonResource
             'name'=>$this->resource->name,
             'description'=>$this->resource->description,
             'price'=>$this->resource->price,
-        
-            'category'=>new CategoryResource($this->resource->category),
+            'category'=> $this->resource->category ? [
+                'id'=>$this->resource->category->id,
+                'name'=>$this->resource->category->name
+            ] : null,
         ];
 
     }

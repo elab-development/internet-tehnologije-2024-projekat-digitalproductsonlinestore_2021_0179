@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CategoryCollection;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -13,7 +15,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return CategoryResource::collection(Category::all());
+        $categories = Category::all();
+        return new CategoryCollection($categories);
     }
 
 
@@ -24,9 +27,22 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'products' => 'array',
+            'products.*' => 'exists:products,id',
+
         ]);
-        $category = Category::create($validated);
-        return  new CategoryResource($category->fresh());
+        $category = Category::create(['name' => $validated['name']]);
+        if (isset($validated['products'])) {
+            foreach ($validated['products'] as $productId) {
+                $product = Product::find($productId);
+                if ($product) {
+                    $product->category_id = $category->id; // Postavljamo category_id
+                    $product->save(); // Čuvamo promene u bazi
+                }
+            }
+        }
+
+        return new CategoryResource($category->fresh());
     }
 
     /**
@@ -77,9 +93,9 @@ class CategoryController extends Controller
 
         return response()->json(['message' => 'Category deleted successfully'], 200);
     }
-    public function getProducts($categoryId)
+    public function getProducts($id)
     {
-        $category = Category::find($categoryId);
+        $category = Category::find($id);
 
         if (!$category) {
             return response()->json(['error' => 'Category not found'], 404);
