@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderCollection;
 
@@ -13,10 +14,28 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::all();
-        return new OrderCollection($orders);
+        if(!Auth::check()){
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'Forbidden: Only admins can create categories'], 403);
+        }
+        $query = Order::query();
+        if ($request->has('user_id')) {
+            $query->where('user_id', $request->input('user_id'));
+        }
+        if ($request->has('status')) {
+            $query->where('status', $request->input('status'));
+        }
+        
+        $query->orderBy('created_at', 'desc'); // Sortiranje po datumu kreiranja
+
+        $orders = $query->paginate(10);
+        return new OrderCollection($orders); // Vraća paginaciju
+        
+        
     }
 
     /**

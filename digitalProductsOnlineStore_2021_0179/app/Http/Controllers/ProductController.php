@@ -11,10 +11,23 @@ use App\Http\Resources\ProductCollection;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $query = Product::query();
 
-        $products = Product::all();
+        if($request->has('name')) {
+            $query->where('name', 'LIKE', '%' . $request->input('name') . '%');
+        }
+
+        if($request->has('min_price')) {
+            $query->where('price', '>=', $request->input('min_price'));
+        }
+
+        if($request->has('max_price')) {
+            $query->where('price', '<=', $request->input('max_price'));
+        }
+
+        $products = $query->paginate(3);
         return new ProductCollection($products);
     }
     
