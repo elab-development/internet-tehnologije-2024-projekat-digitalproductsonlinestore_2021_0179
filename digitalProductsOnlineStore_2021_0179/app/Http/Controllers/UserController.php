@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserCollection;
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\UserCollection;
 
 class UserController extends Controller
 {
@@ -71,6 +72,13 @@ class UserController extends Controller
     }
     public function getOrders($userId)
     {
+        if(!Auth::check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+    
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
         $user = User::with(['orders.products'])->find($userId);
 
         if (!$user) {

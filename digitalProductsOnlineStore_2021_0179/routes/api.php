@@ -35,26 +35,42 @@ Route::group([], function () {
 });
 
 //za ulogovane korisnike
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
     Route::apiResource('orders', OrderController::class);
+
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
 });
 
 //za admin korisnike
-Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
+Route::prefix('admin')->group(function () {
+    Route::post('/login', [AuthController::class, 'loginAdmin']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::get('/profile', [AuthController::class, 'profile']);
+    });
+});
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    // Manipulacija Proizvodima
     Route::post('/products', [ProductController::class, 'store']);
     Route::put('/products/{id}', [ProductController::class, 'update']);
     Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
+    // Manipulacija Kategorijama
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::put('/categories/{id}', [CategoryController::class, 'update']);
     Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
-    
-    // Route::apiResource('users', UserController::class);
+
+    // Pregled korisničkih narudžbina
     Route::get('users/{user}/orders', [UserController::class, 'getOrders']);
 
+    // Pregled svih korisnika (samo admin)
     Route::get('/auth/users', [AuthController::class, 'getAllUsers']);
 });
+

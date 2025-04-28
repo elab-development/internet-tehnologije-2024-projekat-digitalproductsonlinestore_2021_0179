@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\CategoryCollection;
-use App\Http\Resources\CategoryResource;
-use App\Models\Category;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\CategoryCollection;
 
 class CategoryController extends Controller
 {
@@ -25,6 +26,12 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        if(!Auth::check()){
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'Forbidden: Only admins can create categories'], 403);
+        }
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'products' => 'array',
@@ -65,6 +72,12 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(!Auth::check()){
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'Forbidden: Only admins can update categories'], 403);
+        }
         $category = Category::find($id);
 
         if (!$category) {
@@ -83,6 +96,12 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
+        if(!Auth::check()){
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'Forbidden: Only admins can delete categories'], 403);
+        }
         $category = Category::find($id);
 
         if (!$category) {
