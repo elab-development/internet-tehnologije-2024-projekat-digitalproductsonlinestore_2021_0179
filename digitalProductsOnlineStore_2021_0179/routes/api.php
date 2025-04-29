@@ -39,7 +39,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', function (Request $request) {
         return $request->user();
-    });
+    }); // Pregled korisničkog profila bez narudžbina
     Route::apiResource('orders', OrderController::class);
 
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -47,13 +47,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 //za admin korisnike
-Route::prefix('admin')->group(function () {
-    Route::post('/login', [AuthController::class, 'loginAdmin']);
-
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/logout', [AuthController::class, 'logout']);
-        Route::get('/profile', [AuthController::class, 'profile']);
-    });
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/profile', [AuthController::class, 'profile']); // Pregled korisničkog profila sa narudžbinama
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -73,4 +69,3 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Pregled svih korisnika (samo admin)
     Route::get('/auth/users', [AuthController::class, 'getAllUsers']);
 });
-

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+
 use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -60,10 +62,20 @@ class AuthController extends Controller
         return response()->json(['message' => 'User logged out successfully']);
     }
 
-    public function getUserData()
+    public function profile()
     {
+        $user = auth()->user();
+        if(!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+         
+        $orders = Order::where('user_id', $user->id)->get()->groupBy('status');
 
-        return new UserResource(Auth::user());
+        return response()->json([
+            'user' => $user,
+            'orders' => $orders,
+        ]);
+
     }
 
     public function getAllUsers()

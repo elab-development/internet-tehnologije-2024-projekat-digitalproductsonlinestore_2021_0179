@@ -14,9 +14,14 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::all();
+        $query = Category::query();
+        if($request->has('name')){
+            $query->where('name', 'like', '%' . $request->input('name') . '%')->get();
+        }
+
+        $categories = $query->paginate(3);
         return new CategoryCollection($categories);
     }
 

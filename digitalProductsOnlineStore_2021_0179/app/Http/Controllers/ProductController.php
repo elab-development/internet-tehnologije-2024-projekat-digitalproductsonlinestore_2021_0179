@@ -27,6 +27,11 @@ class ProductController extends Controller
             $query->where('price', '<=', $request->input('max_price'));
         }
 
+        if($request->has('sort_price')){
+            $sortOrder = $request->input('sort_price') === 'desc' ? 'desc' : 'asc';
+            $query->orderBy('price', $sortOrder);
+        }
+
         $products = $query->paginate(3);
         return new ProductCollection($products);
     }

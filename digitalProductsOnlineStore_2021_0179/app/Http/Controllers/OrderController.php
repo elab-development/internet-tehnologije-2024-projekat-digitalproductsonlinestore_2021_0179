@@ -20,7 +20,7 @@ class OrderController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
         if (Auth::user()->role !== 'admin') {
-            return response()->json(['message' => 'Forbidden: Only admins can create categories'], 403);
+            return response()->json(['message' => 'Forbidden: Only admins can access orders'], 403);
         }
         $query = Order::query();
         if ($request->has('user_id')) {
