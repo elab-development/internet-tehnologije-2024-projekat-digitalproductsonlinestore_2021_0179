@@ -1,4 +1,4 @@
-import OneProduct from "./OneProduct";
+import OneProduct from "../components/OneProduct";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
