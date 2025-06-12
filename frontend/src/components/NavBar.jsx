@@ -34,7 +34,7 @@ function Navbar() {
         {/* Logo + naziv */}
         <Link to="/" className="navbar-brand d-flex align-items-center">
           <img src="/logo.png" alt="Logo" height="50" className="me-3" />
-          <strong className="fs-2">Lootify</strong>
+          <strong className="fs-3">Lootify</strong>
         </Link>
 
         {/* Hamburger meni za mobilni prikaz */}
@@ -54,14 +54,14 @@ function Navbar() {
         <div className="collapse navbar-collapse justify-content-between" id="mainNavbar">
           <ul className="navbar-nav mx-auto text-center mb-2 mb-lg-0 d-flex gap-4">
             <li className="nav-item">
-              <NavLink to="/" className={`nav-link fs-5 ${isActive("/")}`}>
+              <NavLink to="/" className={`nav-link fs-6 ${isActive("/")}`}>
                 Home
               </NavLink>
             </li>
             <li className="nav-item">
               <NavLink
                 to="/products"
-                className={`nav-link fs-5 ${isActive("/products")}`}
+                className={`nav-link fs-6 ${isActive("/products")}`}
               >
                 Products
               </NavLink>
@@ -69,13 +69,13 @@ function Navbar() {
             
             {token && (
               <li className="nav-item">
-                <NavLink to="/owned" className={`nav-link fs-5 ${isActive("/owned")}`}>
+                <NavLink to="/owned" className={`nav-link fs-6 ${isActive("/owned")}`}>
                   My Purchases
                 </NavLink>
               </li>
             )}
             <li className="nav-item">
-              <NavLink to="/about" className={`nav-link fs-5 ${isActive("/about")}`}>
+              <NavLink to="/about" className={`nav-link fs-6 ${isActive("/about")}`}>
                 About
               </NavLink>
             </li>
@@ -101,7 +101,7 @@ function Navbar() {
                 {/* Logout dugme */}
                 <li className="nav-item">
                   <button
-                    className="btn btn-outline-secondary fs-5 btn-sm"
+                    className="btn btn-outline-secondary fs-6 btn-sm"
                     onClick={handleLogout}
                   >
                     Logout
@@ -111,12 +111,12 @@ function Navbar() {
             ) : (
               <>
                 <li className="nav-item">
-                  <Link to="/login" className={`nav-link fs-5 ${isActive("/login")}`}>Login</Link>
+                  <Link to="/login" className={`nav-link fs-6 ${isActive("/login")}`}>Login</Link>
                 </li>
                 <li className="nav-item">
                   <Link
                     to="/register"
-                    className={`btn btn-info ${isActive("/register")}`}
+                    className={`btn btn-info fs-6 ${isActive("/register")}`}
                   >
                     Register
                   </Link>

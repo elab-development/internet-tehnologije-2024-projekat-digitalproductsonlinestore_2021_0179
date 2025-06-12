@@ -42,12 +42,21 @@ const Login = ({ addToken }) => {
 
   return (
     <div className="auth-container">
+      <button
+        type="button"
+        className="back-button"
+        onClick={() => navigate("/")}
+      >
+        ← Nazad
+      </button>
       <div className="auth-card">
         <h3 className="auth-title">Login</h3>
         {errorMsg && <div className="auth-error">{errorMsg}</div>}
         <form onSubmit={handleLogin}>
           <div className="mb-3">
-            <label htmlFor="email" className="form-label">Email adresa</label>
+            <label htmlFor="email" className="form-label">
+              Email adresa
+            </label>
             <input
               type="email"
               className="form-control"
@@ -58,7 +67,9 @@ const Login = ({ addToken }) => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="password" className="form-label">Lozinka</label>
+            <label htmlFor="password" className="form-label">
+              Lozinka
+            </label>
             <input
               type="password"
               className="form-control"
@@ -68,13 +79,19 @@ const Login = ({ addToken }) => {
               onChange={handleInput}
             />
           </div>
-          <button type="submit" className="btn btn-primary auth-button" disabled={loading}>
+          <button
+            type="submit"
+            className="btn btn-primary auth-button"
+            disabled={loading}
+          >
             {loading ? "Prijavljivanje..." : "Prijavi se"}
           </button>
         </form>
         <p className="text-center mt-3">
           Nemate nalog?{" "}
-          <a href="/register" className="text-primary fw-bold">Registrujte se</a>
+          <a href="/register" className="text-primary fw-bold">
+            Registrujte se
+          </a>
         </p>
       </div>
     </div>

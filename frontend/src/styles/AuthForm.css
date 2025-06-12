@@ -1,34 +1,106 @@
+/* === AuthForm.css === */
+
 .auth-container {
   min-height: 100vh;
+  background-color: #000000;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   padding: 2rem;
-  background-color: #f8f9fa;
 }
 
 .auth-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 2.5rem;
   width: 100%;
-  max-width: 420px;
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  color: white;
+  box-shadow: 0 0 25px rgba(13, 202, 240, 0.729);
+  transition: transform 0.3s ease;
+}
+
+.auth-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 40px rgba(13, 202, 240, 0.729);
 }
 
 .auth-title {
   text-align: center;
-  font-weight: bold;
   margin-bottom: 1.5rem;
+  color: #0dcaf0;
+  font-weight: 600;
+  font-size: 1.8rem;
+}
+
+.auth-error {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff4d4f;
+  border-left: 4px solid #ff4d4f;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  font-size: 0.9rem;
 }
 
 .auth-button {
   width: 100%;
+  background-color: #0dcaf0;
+  border: none;
+  color: black;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  transition: background 0.3s ease, transform 0.2s;
 }
 
-.auth-error {
-  color: #dc3545;
-  font-weight: 500;
-  margin-bottom: 1rem;
-  text-align: center;
+.auth-button:hover {
+  background-color: #0bbcd1;
+  transform: scale(1.02);
+  color: white;
 }
+
+.form-control {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 10px;
+  padding: 0.6rem;
+}
+
+.form-control::placeholder {
+  color: #ccc;
+}
+
+.form-label {
+  color: #ccc;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: #0dcaf0;
+  font-weight: 500;
+  
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  align-self: flex-start;
+}
+
+.back-button:hover {
+  color: #0bbcd1;
+  text-decoration: underline;
+}
+.auth-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 400px;
+}
+

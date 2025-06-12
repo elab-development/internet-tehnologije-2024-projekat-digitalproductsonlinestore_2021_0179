@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../styles/AuthForm.css"; 
+import "../styles/AuthForm.css";
 
 const RegisterPage = () => {
   const [userData, setUserData] = useState({
@@ -42,12 +42,22 @@ const RegisterPage = () => {
 
   return (
     <div className="auth-container">
+      <button
+        type="button"
+        className="back-button"
+        onClick={() => navigate("/")}
+      >
+        ← Nazad
+      </button>
       <div className="auth-card">
         <h3 className="auth-title">Registracija</h3>
+
         {errorMsg && <div className="auth-error">{errorMsg}</div>}
         <form onSubmit={handleRegister}>
           <div className="mb-3">
-            <label htmlFor="name" className="form-label">Ime</label>
+            <label htmlFor="name" className="form-label">
+              Ime
+            </label>
             <input
               type="text"
               className="form-control"
@@ -58,7 +68,9 @@ const RegisterPage = () => {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="email" className="form-label">Email adresa</label>
+            <label htmlFor="email" className="form-label">
+              Email adresa
+            </label>
             <input
               type="email"
               className="form-control"
@@ -69,7 +81,9 @@ const RegisterPage = () => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="password" className="form-label">Lozinka</label>
+            <label htmlFor="password" className="form-label">
+              Lozinka
+            </label>
             <input
               type="password"
               className="form-control"
@@ -79,13 +93,19 @@ const RegisterPage = () => {
               onChange={handleInput}
             />
           </div>
-          <button type="submit" className="btn btn-primary auth-button" disabled={loading}>
+          <button
+            type="submit"
+            className="btn btn-primary auth-button"
+            disabled={loading}
+          >
             {loading ? "Registrujem..." : "Registruj se"}
           </button>
         </form>
         <p className="text-center mt-3">
           Već imate nalog?{" "}
-          <a href="/login" className="text-primary fw-bold">Prijavite se</a>
+          <a href="/login" className="text-primary fw-bold">
+            Prijavite se
+          </a>
         </p>
       </div>
     </div>
