@@ -1,6 +1,7 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {NavLink,  Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
+import "../styles/HomePage.css"; 
 
 function Navbar() {
   const [token, setToken] = useState(null);
@@ -28,12 +29,12 @@ function Navbar() {
     location.pathname === path ? "fw-bold text-primary" : "";
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
       <div className="container">
         {/* Logo + naziv */}
         <Link to="/" className="navbar-brand d-flex align-items-center">
-          <img src="/logo.png" alt="Logo" height="30" className="me-2" />
-          <strong>Lootify</strong>
+          <img src="/logo.png" alt="Logo" height="50" className="me-3" />
+          <strong className="fs-2">Lootify</strong>
         </Link>
 
         {/* Hamburger meni za mobilni prikaz */}
@@ -51,39 +52,32 @@ function Navbar() {
 
         {/* Navigacija */}
         <div className="collapse navbar-collapse justify-content-between" id="mainNavbar">
-          <ul className="navbar-nav mx-auto text-center mb-2 mb-lg-0">
+          <ul className="navbar-nav mx-auto text-center mb-2 mb-lg-0 d-flex gap-4">
             <li className="nav-item">
-              <Link to="/" className={`nav-link fs-5 ${isActive("/")}`}>
+              <NavLink to="/" className={`nav-link fs-5 ${isActive("/")}`}>
                 Home
-              </Link>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <Link
+              <NavLink
                 to="/products"
                 className={`nav-link fs-5 ${isActive("/products")}`}
               >
                 Products
-              </Link>
+              </NavLink>
             </li>
-            <li className="nav-item">
-              <Link
-                to="/categories"
-                className={`nav-link fs-5 ${isActive("/categories")}`}
-              >
-                Categories
-              </Link>
-            </li>
+            
             {token && (
               <li className="nav-item">
-                <Link to="/owned" className={`nav-link fs-5 ${isActive("/owned")}`}>
-                  What You Own
-                </Link>
+                <NavLink to="/owned" className={`nav-link fs-5 ${isActive("/owned")}`}>
+                  My Purchases
+                </NavLink>
               </li>
             )}
             <li className="nav-item">
-              <Link to="/about" className={`nav-link fs-5 ${isActive("/about")}`}>
+              <NavLink to="/about" className={`nav-link fs-5 ${isActive("/about")}`}>
                 About
-              </Link>
+              </NavLink>
             </li>
           </ul>
 
@@ -122,7 +116,7 @@ function Navbar() {
                 <li className="nav-item">
                   <Link
                     to="/register"
-                    className={`btn btn-outline-primary fs-5 btn-sm ${isActive("/register")}`}
+                    className={`btn btn-info ${isActive("/register")}`}
                   >
                     Register
                   </Link>

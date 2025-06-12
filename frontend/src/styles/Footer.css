@@ -1,0 +1,8 @@
+.site-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-links a:hover {
+  color: #0dcaf0;
+  text-decoration: underline;
+}

@@ -1,0 +1,225 @@
+/* HomePage.css */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.nav-link.active {
+  border-bottom: 2px solid #0dcaf0;
+  color: #0dcaf0 !important;
+}
+.nav-link:hover {
+  color: #0dcaf0 !important;
+}
+
+.home-page {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #000000;
+  padding-top: 80px;
+}
+
+.section {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.section-subtitle {
+  color: #6b7280;
+  margin-top: 10px;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.stat-label {
+  color: #6b7280;
+}
+
+.bg-gray {
+  background-color: #f9fafb;
+}
+
+.categories-section {
+  background-color: #000;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: #aaa;
+}
+
+.categories-section {
+  background-color: #000;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: #aaa;
+}
+
+
+
+.glass-categories {
+  background-color: #000;
+  padding: 3rem 0;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-scroll-wrapper {
+  position: relative;
+  overflow: hidden;
+
+  padding-top: 20px;
+}
+
+.glass-scroll {
+  padding-left: 20px;
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 1rem;
+  padding-top: 20px;
+
+  /* uklanja scrollbar u većini browsera */
+  scrollbar-width: none; /* Firefox */
+}
+
+.glass-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+
+.glass-card {
+  min-width: 300px;
+  height: 400px;
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+  border: 3px solid rgba(45, 101, 120, 0.2);
+  scroll-snap-align: start;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  position: relative;
+}
+
+.glass-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.glass-inner {
+  text-align: center;
+}
+
+.glass-inner h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+.glass-scroll-btn {
+  position: absolute;
+  right: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  z-index: 10;
+  color: white;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+
+.glass-scroll-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.glass-fade-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 100%;
+  background: linear-gradient(to right, transparent, black);
+  pointer-events: none;
+}
+
+.why-choose-section {
+  background-color: #111;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: #bbb;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(6px);
+  min-height: 200px;
+}
+
+.stat-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.stat-label {
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.icon {
+  color: #0dcaf0;
+}
