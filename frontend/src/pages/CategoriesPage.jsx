@@ -1,9 +1,12 @@
 import axios from "axios";
 import OneCategory from "./OneCategory";
 import { useState, useEffect } from "react";
+import mockCategories from "../mockData/categories.json";
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState([]);
+
+
   useEffect(() => {
     if(categories == null) {
         axios.get("api/categories").then((response) => {
