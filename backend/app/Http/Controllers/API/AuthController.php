@@ -47,13 +47,13 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::attempt($validated)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->json(['success' => false, 'message' => 'Invalid credentials'], 401);
         }
 
         $user = Auth::user();
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json(['message' => 'Hi ' . $user->name . ', welcome to home', 'access_token' => $token, 'token_type' => 'Bearer']);
+        return response()->json(['success' => true, 'message' => 'Hi ' . $user->name . ', welcome to home', 'access_token' => $token, 'token_type' => 'Bearer']);
     }
 
     public function logout(Request $request)

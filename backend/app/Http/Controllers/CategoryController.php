@@ -21,7 +21,7 @@ class CategoryController extends Controller
             $query->where('name', 'like', '%' . $request->input('name') . '%')->get();
         }
 
-        $categories = $query->paginate(3);
+        $categories = $query->get();
         return new CategoryCollection($categories);
     }
 

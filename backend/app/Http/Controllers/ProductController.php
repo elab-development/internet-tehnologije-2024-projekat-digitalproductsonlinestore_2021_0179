@@ -32,7 +32,7 @@ class ProductController extends Controller
             $query->orderBy('price', $sortOrder);
         }
 
-        $products = $query->paginate(3);
+        $products = $query->get();
         return new ProductCollection($products);
     }
     
