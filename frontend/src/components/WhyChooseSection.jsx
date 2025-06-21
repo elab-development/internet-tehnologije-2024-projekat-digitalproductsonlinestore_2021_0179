@@ -40,7 +40,7 @@ const WhyChooseSection = () => {
   return (
     <section className="why-choose-section">
       <div className="container text-center text-white py-5">
-        <h2 className="section-title mb-4">Why Choose Lootify?</h2>
+        <h2 className="section-title mb-4">Why Choose Cloudery?</h2>
         <p className="section-subtitle mb-5">
           Trusted by thousands of users and creators around the world
         </p>

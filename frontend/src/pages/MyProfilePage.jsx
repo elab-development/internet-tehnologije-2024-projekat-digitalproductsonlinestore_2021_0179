@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Settings, ShoppingBag, Shield, Bell, CreditCard, LogOut, Edit } from "lucide-react";
+import {
+  User,
+  Settings,
+  ShoppingBag,
+  Shield,
+  Bell,
+  CreditCard,
+  LogOut,
+  Edit,
+} from "lucide-react";
 import "../styles/MyProfilePage.css";
 import Footer from "../components/Footer.jsx";
+import axios from "axios";
 
 const MyProfilePage = () => {
   const [activeTab, setActiveTab] = useState("profile");
@@ -10,9 +20,10 @@ const MyProfilePage = () => {
     name: "John Doe",
     email: "john.doe@example.com",
     phone: "+381 60 123 4567",
-    address: "Belgrade, Serbia"
+    address: "Belgrade, Serbia",
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,6 +32,38 @@ const MyProfilePage = () => {
       navigate("/login");
       return;
     }
+
+    axios
+      .get("/api/user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        const user = response.data;
+        setUserInfo({
+          name: user.name,
+          email: user.email,
+          phone: user.phone || "",
+          address: user.address || "",
+        });
+      })
+      .catch((error) => {
+        console.error("Failed to load user info", error);
+        navigate("/login"); // ako token nije važeći
+      });
+    axios
+      .get("/api/user/orders", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setOrders(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to load user orders", err);
+      });
   }, [navigate]);
 
   const handleLogout = () => {
@@ -44,7 +87,7 @@ const MyProfilePage = () => {
           <h2>{userInfo.name}</h2>
           <p>{userInfo.email}</p>
         </div>
-        <button 
+        <button
           className="edit-profile-btn"
           onClick={() => setIsEditing(!isEditing)}
         >
@@ -57,10 +100,12 @@ const MyProfilePage = () => {
         <div className="detail-group">
           <label>Full Name</label>
           {isEditing ? (
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={userInfo.name}
-              onChange={(e) => setUserInfo({...userInfo, name: e.target.value})}
+              onChange={(e) =>
+                setUserInfo({ ...userInfo, name: e.target.value })
+              }
             />
           ) : (
             <span>{userInfo.name}</span>
@@ -70,10 +115,12 @@ const MyProfilePage = () => {
         <div className="detail-group">
           <label>Email</label>
           {isEditing ? (
-            <input 
-              type="email" 
+            <input
+              type="email"
               value={userInfo.email}
-              onChange={(e) => setUserInfo({...userInfo, email: e.target.value})}
+              onChange={(e) =>
+                setUserInfo({ ...userInfo, email: e.target.value })
+              }
             />
           ) : (
             <span>{userInfo.email}</span>
@@ -83,10 +130,12 @@ const MyProfilePage = () => {
         <div className="detail-group">
           <label>Phone</label>
           {isEditing ? (
-            <input 
-              type="tel" 
+            <input
+              type="tel"
               value={userInfo.phone}
-              onChange={(e) => setUserInfo({...userInfo, phone: e.target.value})}
+              onChange={(e) =>
+                setUserInfo({ ...userInfo, phone: e.target.value })
+              }
             />
           ) : (
             <span>{userInfo.phone}</span>
@@ -96,10 +145,12 @@ const MyProfilePage = () => {
         <div className="detail-group">
           <label>Address</label>
           {isEditing ? (
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={userInfo.address}
-              onChange={(e) => setUserInfo({...userInfo, address: e.target.value})}
+              onChange={(e) =>
+                setUserInfo({ ...userInfo, address: e.target.value })
+              }
             />
           ) : (
             <span>{userInfo.address}</span>
@@ -117,31 +168,30 @@ const MyProfilePage = () => {
 
   const renderOrdersTab = () => (
     <div className="orders-tab">
-      <h3>Recent Orders</h3>
+      <h3>My Orders</h3>
       <div className="orders-list">
-        <div className="order-item">
-          <div className="order-info">
-            <h4>Order #12345</h4>
-            <p>Date: January 15, 2024</p>
-            <p>Total: 2,500 RSD</p>
-          </div>
-          <span className="order-status completed">Completed</span>
-        </div>
-        <div className="order-item">
-          <div className="order-info">
-            <h4>Order #12344</h4>
-            <p>Date: January 10, 2024</p>
-            <p>Total: 1,800 RSD</p>
-          </div>
-          <span className="order-status completed">Completed</span>
-        </div>
+        {orders.length === 0 ? (
+          <p>You have no orders yet.</p>
+        ) : (
+          orders.map((order) => (
+            <div className="order-item" key={order.id}>
+              <div className="order-info">
+                <h4>Order #{order.id}</h4>
+                <p>Date: {new Date(order.created_at).toLocaleDateString()}</p>
+                <p>Total: {order.total_price} RSD</p>
+                {order.products && (
+                  <ul>
+                    {order.products.map((p) => (
+                      <li key={p.id}>{p.name}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <span className="order-status completed">Completed</span>
+            </div>
+          ))
+        )}
       </div>
-      <button 
-        className="view-all-orders-btn"
-        onClick={() => navigate("/orders")}
-      >
-        View All Orders
-      </button>
     </div>
   );
 
@@ -197,16 +247,30 @@ const MyProfilePage = () => {
       <h3>Privacy Policy</h3>
       <div className="privacy-content">
         <h4>Data Collection</h4>
-        <p>We collect information you provide directly to us, such as when you create an account, make a purchase, or contact us.</p>
-        
+        <p>
+          We collect information you provide directly to us, such as when you
+          create an account, make a purchase, or contact us.
+        </p>
+
         <h4>Use of Information</h4>
-        <p>We use the information we collect to provide, maintain, and improve our services, process transactions, and communicate with you.</p>
-        
+        <p>
+          We use the information we collect to provide, maintain, and improve
+          our services, process transactions, and communicate with you.
+        </p>
+
         <h4>Information Sharing</h4>
-        <p>We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy.</p>
-        
+        <p>
+          We do not sell, trade, or otherwise transfer your personal information
+          to third parties without your consent, except as described in this
+          policy.
+        </p>
+
         <h4>Data Security</h4>
-        <p>We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.</p>
+        <p>
+          We implement appropriate security measures to protect your personal
+          information against unauthorized access, alteration, disclosure, or
+          destruction.
+        </p>
       </div>
     </div>
   );
@@ -218,40 +282,40 @@ const MyProfilePage = () => {
           <div className="sidebar-header">
             <h2>My Account</h2>
           </div>
-          
+
           <nav className="sidebar-nav">
-            <button 
-              className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
-              onClick={() => setActiveTab('profile')}
+            <button
+              className={`nav-item ${activeTab === "profile" ? "active" : ""}`}
+              onClick={() => setActiveTab("profile")}
             >
               <User size={20} />
               Profile Information
             </button>
-            
-            <button 
-              className={`nav-item ${activeTab === 'orders' ? 'active' : ''}`}
-              onClick={() => setActiveTab('orders')}
+
+            <button
+              className={`nav-item ${activeTab === "orders" ? "active" : ""}`}
+              onClick={() => setActiveTab("orders")}
             >
               <ShoppingBag size={20} />
               My Orders
             </button>
-            
-            <button 
-              className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
-              onClick={() => setActiveTab('settings')}
+
+            <button
+              className={`nav-item ${activeTab === "settings" ? "active" : ""}`}
+              onClick={() => setActiveTab("settings")}
             >
               <Settings size={20} />
               Settings
             </button>
-            
-            <button 
-              className={`nav-item ${activeTab === 'privacy' ? 'active' : ''}`}
-              onClick={() => setActiveTab('privacy')}
+
+            <button
+              className={`nav-item ${activeTab === "privacy" ? "active" : ""}`}
+              onClick={() => setActiveTab("privacy")}
             >
               <Shield size={20} />
               Privacy & Policy
             </button>
-            
+
             <button className="nav-item logout" onClick={handleLogout}>
               <LogOut size={20} />
               Logout
@@ -260,10 +324,10 @@ const MyProfilePage = () => {
         </div>
 
         <div className="profile-content">
-          {activeTab === 'profile' && renderProfileTab()}
-          {activeTab === 'orders' && renderOrdersTab()}
-          {activeTab === 'settings' && renderSettingsTab()}
-          {activeTab === 'privacy' && renderPrivacyTab()}
+          {activeTab === "profile" && renderProfileTab()}
+          {activeTab === "orders" && renderOrdersTab()}
+          {activeTab === "settings" && renderSettingsTab()}
+          {activeTab === "privacy" && renderPrivacyTab()}
         </div>
       </div>
       <Footer />

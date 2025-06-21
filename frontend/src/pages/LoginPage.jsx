@@ -55,27 +55,27 @@ const Login = ({ addToken }) => {
         <form onSubmit={handleLogin}>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
-              Email adresa
+              Email address
             </label>
             <input
               type="email"
               className="form-control"
               id="email"
               name="email"
-              placeholder="Unesite email"
+              placeholder="Insert your email address"
               onChange={handleInput}
             />
           </div>
           <div className="mb-4">
             <label htmlFor="password" className="form-label">
-              Lozinka
+              Password
             </label>
             <input
               type="password"
               className="form-control"
               id="password"
               name="password"
-              placeholder="Unesite lozinku"
+              placeholder="Insert your password"
               onChange={handleInput}
             />
           </div>
@@ -84,13 +84,13 @@ const Login = ({ addToken }) => {
             className="btn btn-primary auth-button"
             disabled={loading}
           >
-            {loading ? "Prijavljivanje..." : "Prijavi se"}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
         <p className="text-center mt-3">
-          Nemate nalog?{" "}
+          No account?{" "}
           <a href="/register" className="text-primary fw-bold">
-            Registrujte se
+            Register
           </a>
         </p>
       </div>

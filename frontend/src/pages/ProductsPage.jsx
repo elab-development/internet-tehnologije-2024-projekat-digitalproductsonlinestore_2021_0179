@@ -5,6 +5,7 @@ import { ShoppingCart, Star, Filter, ChevronLeft, ChevronRight } from "lucide-re
 import "../styles/ProductsPage.css";
 import Footer from "../components/Footer.jsx";
 
+
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
@@ -26,37 +27,47 @@ const ProductsPage = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const categoryId = getCategoryId();
-        const productUrl = categoryId
-          ? `api/products?category_id=${categoryId}`
-          : `api/products`;
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const categoryId = getCategoryId();
+      const productUrl = `api/products`;
 
-        const [productsRes, categoriesRes] = await Promise.all([
-          axios.get(productUrl),
-          axios.get('/api/categories')
-        ]);
+      const [productsRes, categoriesRes] = await Promise.all([
+        axios.get(productUrl),
+        axios.get('/api/categories')
+      ]);
 
-        const fetchedProducts = productsRes.data.products || [];
+      const fetchedProducts = productsRes.data.products || [];
+      const fetchedCategories = categoriesRes.data.category || [];
+
+      setAllProducts(fetchedProducts);
+      setCategories(fetchedCategories);
+      setFilterCategory(categoryId || ""); // postavi filterCategory odmah
+
+      if (categoryId) {
+        const filtered = fetchedProducts.filter(
+          (product) => product.category_id === parseInt(categoryId)
+        );
+        setProducts(filtered);
+
+        // dohvatimo i naziv kategorije da se prikaže kao naslov
+        const catRes = await axios.get(`api/categories/${categoryId}`);
+        setCategoryName(catRes.data.name || "");
+      } else {
         setProducts(fetchedProducts);
-        setAllProducts(fetchedProducts);
-        setCategories(categoriesRes.data.category || []);
-
-        if (categoryId) {
-          const catRes = await axios.get(`api/categories/${categoryId}`);
-          setCategoryName(catRes.data.name || "");
-        }
-      } catch (err) {
-        console.error("Error:", err);
-      } finally {
-        setLoading(false);
+        setCategoryName("");
       }
-    };
+    } catch (err) {
+      console.error("Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchData();
-  }, [location.search]);
+  fetchData();
+}, [location.search]);
+
 
   const handleSort = (sortType) => {
     let sortedProducts = [...products];
@@ -98,7 +109,7 @@ const ProductsPage = () => {
     const token = sessionStorage.getItem("auth_token");
     
     if (!token) {
-      navigate("/register");
+      navigate("/login");
       return;
     }
 
@@ -224,7 +235,7 @@ const ProductsPage = () => {
                 
                 <div className="product-footer">
                   <div className="product-price">
-                    <span className="price-amount">{Number(product.price).toFixed(2)} RSD</span>
+                    <span className="price-amount">{Number(product.price).toFixed(2)} EUR</span>
                   </div>
                   
                   <button
@@ -232,7 +243,7 @@ const ProductsPage = () => {
                     onClick={(e) => handleAddToCart(e, product)}
                   >
                     <ShoppingCart size={18} />
-                    Add to Cart
+                    
                   </button>
                 </div>
               </div>

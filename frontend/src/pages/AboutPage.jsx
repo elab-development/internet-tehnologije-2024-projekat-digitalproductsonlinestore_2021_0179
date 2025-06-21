@@ -23,37 +23,9 @@ const AboutPage = () => {
       description: "All products come with proper licensing for commercial and personal use."
     },
     {
-      icon: <Clock size={32} />,
-      title: "24/7 Support",
-      description: "Our dedicated support team is available around the clock to help you."
-    },
-    {
       icon: <Award size={32} />,
       title: "Premium Quality",
       description: "Curated collection of high-quality digital assets from top creators."
-    }
-  ];
-
-  const team = [
-    {
-      name: "Sarah Johnson",
-      role: "CEO & Founder",
-      description: "Visionary leader with 10+ years in digital marketplace industry."
-    },
-    {
-      name: "Mike Chen",
-      role: "CTO",
-      description: "Tech expert ensuring our platform runs smoothly and securely."
-    },
-    {
-      name: "Emily Davis",
-      role: "Head of Design",
-      description: "Creative director curating the best digital assets for our users."
-    },
-    {
-      name: "Alex Rodriguez",
-      role: "Customer Success",
-      description: "Dedicated to providing exceptional customer support and experience."
     }
   ];
 
@@ -63,13 +35,13 @@ const AboutPage = () => {
         {/* Hero Section */}
         <section className="about-hero">
           <div className="hero-content">
-            <h1 className="hero-title">About Lootify</h1>
+            <h1 className="hero-title">About Cloudery</h1>
             <p className="hero-subtitle">
               Your premier destination for high-quality digital assets, templates, and creative resources.
             </p>
             <div className="hero-description">
               <p>
-                Founded in 2020, Lootify has grown to become one of the most trusted digital marketplaces, 
+                Founded in 2020, Cloudery has grown to become one of the most trusted digital marketplaces, 
                 serving creators, businesses, and individuals worldwide with premium digital content.
               </p>
             </div>
@@ -94,7 +66,7 @@ const AboutPage = () => {
           <div className="mission-content">
             <h2 className="section-title">Our Mission</h2>
             <p className="mission-text">
-              At Lootify, we believe that great design and quality digital assets should be accessible to everyone. 
+              At Cloudery, we believe that great design and quality digital assets should be accessible to everyone. 
               Our mission is to connect talented creators with individuals and businesses who need premium digital 
               content, fostering a community where creativity thrives and innovation flourishes.
             </p>
@@ -117,7 +89,7 @@ const AboutPage = () => {
 
         {/* Features Section */}
         <section className="features-section">
-          <h2 className="section-title">Why Choose Lootify?</h2>
+          <h2 className="section-title">Why Choose Cloudery?</h2>
           <div className="features-grid">
             {features.map((feature, index) => (
               <div key={index} className="feature-card">
@@ -140,7 +112,7 @@ const AboutPage = () => {
             </p>
             <div className="contact-info">
               <div className="contact-item">
-                <strong>Email:</strong> support@lootify.com
+                <strong>Email:</strong> support@Cloudery.com
               </div>
               <div className="contact-item">
                 <strong>Phone:</strong> +381 11 123 4567

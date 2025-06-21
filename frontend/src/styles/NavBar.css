@@ -10,3 +10,11 @@
 .nav-link:hover {
   color: #0dcaf0 !important;
 }
+.logo-img {
+  height: 60px;       
+  width: auto;         
+  object-fit: contain;
+  margin-right: 10px;
+}
+
+

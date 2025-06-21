@@ -22,7 +22,7 @@ function Navbar() {
     sessionStorage.removeItem("auth_token");
     localStorage.removeItem("cart");
     setToken(null);
-    navigate("/login");
+    navigate("/");
   };
 
   const isActive = (path) =>
@@ -33,8 +33,8 @@ function Navbar() {
       <div className="container">
         {/* Logo + naziv */}
         <Link to="/" className="navbar-brand d-flex align-items-center">
-          <img src="/logo.png" alt="Logo" height="50" className="me-3" />
-          <strong className="fs-3">Lootify</strong>
+          <img src="/logo.png" alt="Logo" className="logo-img" />
+          <strong className="fs-3">Cloudery</strong>
         </Link>
 
         {/* Hamburger meni za mobilni prikaz */}
@@ -52,7 +52,7 @@ function Navbar() {
 
         {/* Navigacija */}
         <div className="collapse navbar-collapse justify-content-between" id="mainNavbar">
-          <ul className="navbar-nav mx-auto text-center mb-2 mb-lg-0 d-flex gap-3">
+          <ul className="navbar-nav mx-auto text-center mb-2 mb-lg-0 d-flex">
             <li className="nav-item">
               <NavLink to="/" className={`nav-link fs-6 ${isActive("/")}`}>
                 Home
@@ -68,8 +68,8 @@ function Navbar() {
             </li>
             
             {token && (
-              <li className="nav-item">
-                <NavLink to="/profile" className={`nav-link fs-6 ${isActive("/profile")}`}>
+              <li className="nav-item" style={{ minWidth: "130px" }}>
+                <NavLink to="/profile" className={`nav-link fs-6  ${isActive("/profile")}`}>
                   My Profile
                 </NavLink>
               </li>

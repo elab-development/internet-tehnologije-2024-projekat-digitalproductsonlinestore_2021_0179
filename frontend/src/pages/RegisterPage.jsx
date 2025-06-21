@@ -8,7 +8,9 @@ const RegisterPage = () => {
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
+
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -21,14 +23,19 @@ const RegisterPage = () => {
     e.preventDefault();
 
     if (!userData.name || !userData.email || !userData.password) {
-      setErrorMsg("Sva polja su obavezna.");
+      setErrorMsg("All fields are required.");
       return;
     }
 
     if (userData.password.length < 6) {
-      setErrorMsg("Lozinka mora imati najmanje 6 karaktera.");
+      setErrorMsg("Password must be at least 6 characters long.");
       return;
     }
+    if (userData.password !== userData.confirmPassword) {
+  setErrorMsg("Passwords do not match.");
+  return;
+}
+
 
     setLoading(true);
     setErrorMsg("");
@@ -36,7 +43,7 @@ const RegisterPage = () => {
     axios
       .post("api/register", userData)
       .then(() => navigate("/login"))
-      .catch(() => setErrorMsg("Došlo je do greške prilikom registracije."))
+      .catch(() => setErrorMsg("Registration failed. Please try again."))
       .finally(() => setLoading(false));
   };
   const handleBackClick = () => {
@@ -62,61 +69,75 @@ const RegisterPage = () => {
         ← Back
       </button>
       <div className="auth-card">
-        <h3 className="auth-title">Registracija</h3>
+        <h3 className="auth-title">Register</h3>
 
         {errorMsg && <div className="auth-error">{errorMsg}</div>}
         <form onSubmit={handleRegister}>
           <div className="mb-3">
             <label htmlFor="name" className="form-label">
-              Ime
+              Full name
             </label>
             <input
               type="text"
               className="form-control"
               id="name"
               name="name"
-              placeholder="Unesite ime"
+              placeholder="Insert your full name"
               onChange={handleInput}
             />
           </div>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
-              Email adresa
+              Email address
             </label>
             <input
               type="email"
               className="form-control"
               id="email"
               name="email"
-              placeholder="Unesite email"
+              placeholder="Insert your email"
               onChange={handleInput}
             />
           </div>
           <div className="mb-4">
             <label htmlFor="password" className="form-label">
-              Lozinka
+              Password
             </label>
             <input
               type="password"
               className="form-control"
               id="password"
               name="password"
-              placeholder="Unesite lozinku"
+              placeholder="Insert your password"
               onChange={handleInput}
             />
           </div>
+          <div className="mb-3">
+            <label htmlFor="confirmPassword" className="form-label">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              className="form-control"
+              id="confirmPassword"
+              name="confirmPassword"
+              placeholder="Confirm your password"
+              onChange={handleInput}
+            />
+          </div>
+
           <button
             type="submit"
             className="btn btn-primary auth-button"
             disabled={loading}
           >
-            {loading ? "Registrujem..." : "Registruj se"}
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
         <p className="text-center mt-3">
-          Već imate nalog?{" "}
+          Already have an account?{" "}
           <a href="/login" className="text-primary fw-bold">
-            Prijavite se
+            Login
           </a>
         </p>
       </div>

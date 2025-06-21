@@ -17,7 +17,7 @@ const ProductDetailsPage = () => {
       try {
         setLoading(true);
         const res = await axios.get(`/api/products/${id}`);
-        setProduct(res.data);
+        setProduct(res.data.product);
       } catch (err) {
         console.error("Error fetching product:", err);
       } finally {

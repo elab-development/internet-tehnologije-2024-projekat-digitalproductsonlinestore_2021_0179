@@ -109,21 +109,7 @@ const CartPage = () => {
                   </div>
                 </div>
                 
-                <div className="item-quantity">
-                  <button 
-                    className="quantity-btn"
-                    onClick={() => updateQuantity(item.id, -1)}
-                  >
-                    <Minus size={16} />
-                  </button>
-                  <span className="quantity">{item.quantity}</span>
-                  <button 
-                    className="quantity-btn"
-                    onClick={() => updateQuantity(item.id, 1)}
-                  >
-                    <Plus size={16} />
-                  </button>
-                </div>
+                
                 
                 <div className="item-total">
                   {(item.price * item.quantity).toFixed(2)} RSD
