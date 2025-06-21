@@ -56,7 +56,10 @@ const CategoriesSection = () => {
     <section className="glass-categories">
       <div className="glass-scroll-wrapper">
         {canScrollLeft && (
-          <button className="glass-scroll-btn left" onClick={() => scrollByOffset(-300)}>
+          <button
+            className="glass-scroll-btn left"
+            onClick={() => scrollByOffset(-300)}
+          >
             <ChevronLeft size={28} />
           </button>
         )}
@@ -80,7 +83,10 @@ const CategoriesSection = () => {
 
         {canScrollRight && (
           <>
-            <button className="glass-scroll-btn right" onClick={() => scrollByOffset(300)}>
+            <button
+              className="glass-scroll-btn right"
+              onClick={() => scrollByOffset(300)}
+            >
               <ChevronRight size={28} />
             </button>
             <div className="glass-fade-right"></div>

@@ -47,7 +47,7 @@ const Login = ({ addToken }) => {
         className="back-button"
         onClick={() => navigate("/")}
       >
-        ← Nazad
+        ← Back
       </button>
       <div className="auth-card">
         <h3 className="auth-title">Login</h3>

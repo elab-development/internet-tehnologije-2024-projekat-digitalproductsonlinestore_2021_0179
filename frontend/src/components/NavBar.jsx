@@ -1,7 +1,7 @@
 import {NavLink,  Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
-import "../styles/HomePage.css"; 
+import "../styles/NavBar.css"; 
 
 function Navbar() {
   const [token, setToken] = useState(null);
@@ -52,7 +52,7 @@ function Navbar() {
 
         {/* Navigacija */}
         <div className="collapse navbar-collapse justify-content-between" id="mainNavbar">
-          <ul className="navbar-nav mx-auto text-center mb-2 mb-lg-0 d-flex gap-4">
+          <ul className="navbar-nav mx-auto text-center mb-2 mb-lg-0 d-flex gap-3">
             <li className="nav-item">
               <NavLink to="/" className={`nav-link fs-6 ${isActive("/")}`}>
                 Home
@@ -69,8 +69,8 @@ function Navbar() {
             
             {token && (
               <li className="nav-item">
-                <NavLink to="/owned" className={`nav-link fs-6 ${isActive("/owned")}`}>
-                  My Purchases
+                <NavLink to="/profile" className={`nav-link fs-6 ${isActive("/profile")}`}>
+                  My Profile
                 </NavLink>
               </li>
             )}
@@ -90,9 +90,9 @@ function Navbar() {
                 {/* Cart ikonica */}
                 <li className="nav-item me-3 position-relative">
                   <Link to="/cart" className="nav-link">
-                    <FaShoppingCart size={18} />
+                    <FaShoppingCart size={22} />
                     {cartCount > 0 && (
-                      <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                      <span className="position-absolute top-1 start-95 translate-middle badge rounded-pill bg-danger">
                         {cartCount}
                       </span>
                     )}

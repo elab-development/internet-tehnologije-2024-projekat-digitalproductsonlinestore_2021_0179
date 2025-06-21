@@ -39,15 +39,27 @@ const RegisterPage = () => {
       .catch(() => setErrorMsg("Došlo je do greške prilikom registracije."))
       .finally(() => setLoading(false));
   };
+  const handleBackClick = () => {
+    const previousPath = document.referrer;
+    const invalidPaths = ["/login", "/register"];
+    const currentPath = window.location.pathname;
+    if (
+      window.history.length > 1 &&
+      !invalidPaths.includes(
+        document.referrer.replace(window.location.origin, "")
+      )
+    ) {
+      navigate(-1);
+    } else {
+      // If referrer or history is not safe, go home
+      navigate("/");
+    }
+  };
 
   return (
     <div className="auth-container">
-      <button
-        type="button"
-        className="back-button"
-        onClick={() => navigate("/")}
-      >
-        ← Nazad
+      <button type="button" className="back-button" onClick={handleBackClick}>
+        ← Back
       </button>
       <div className="auth-card">
         <h3 className="auth-title">Registracija</h3>

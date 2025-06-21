@@ -7,7 +7,11 @@ import NavBar from "./components/NavBar";
 import {useState} from "react";
 import HomePage from "./pages/HomePage";
 import CategoriesPage from "./pages/CategoriesPage";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
 import { Outlet } from "react-router-dom";
+import CartPage from "./pages/CartPage";
+import AboutPage from "./pages/AboutPage";
+import MyProfilePage from "./pages/MyProfilePage";
 
 function Layout({ token }) {
   return (
@@ -32,6 +36,10 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="products" element={<ProductsPage />} />
           <Route path="categories" element={<CategoriesPage />} />
+          <Route path="product/:id" element={<ProductDetailsPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/profile" element={<MyProfilePage />} />
         </Route>
       </Routes>
     </BrowserRouter>
