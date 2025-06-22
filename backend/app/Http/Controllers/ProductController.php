@@ -62,11 +62,11 @@ class ProductController extends Controller
     public function show($id)
     {
 
-        $product = Product::find($id);
+        $product = Product::findOrFail($id);
 
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
-        }
+        // if (!$product) {
+        //     return response()->json(['message' => 'Product not found'], 404);
+        // }
 
         return new ProductResource($product);
     }

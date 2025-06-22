@@ -16,7 +16,7 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        if(!Auth::check()){
+        if (!Auth::check()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
         if (Auth::user()->role !== 'admin') {
@@ -29,13 +29,13 @@ class OrderController extends Controller
         if ($request->has('status')) {
             $query->where('status', $request->input('status'));
         }
-        
+
         $query->orderBy('created_at', 'desc'); // Sortiranje po datumu kreiranja
 
         $orders = $query->paginate(10);
         return new OrderCollection($orders); // Vraća paginaciju
-        
-        
+
+
     }
 
     /**
@@ -52,34 +52,36 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
             'status' => 'required|string|in:pending,completed,cancelled',
             'notes' => 'nullable|string|max:255',
             'products' => 'required|array',
             'products.*.id' => 'required|exists:products,id',
-            'products.*.quantity' => 'required|integer|min:1',
-
         ]);
+
+        $user = Auth::user(); // koristi token da zna ko je korisnik
+
         $order = Order::create([
             'status' => $validated['status'],
-            'notes' => $validated['notes'],
-            'user_id' => $validated['user_id'],
-            'total_price' => 0, // Privremeno, izračunaćemo kasnije
+            'notes' => $validated['notes'] ?? null,
+            'user_id' => $user->id,
+            'total_price' => 0,
         ]);
-        $totalPrice = 0;
-        foreach ($validated['products'] as $product) {
-            $order->products()->attach($product['id'], ['quantity' => $product['quantity']]);
 
-            // Izračunavamo ukupnu cenu
+        $totalPrice = 0;
+
+        foreach ($validated['products'] as $product) {
             $productModel = Product::find($product['id']);
-            $totalPrice += $productModel->price * $product['quantity'];
+            $order->products()->attach($productModel->id, ['quantity' => 1]);
+
+            $totalPrice += $productModel->price;
         }
 
-        // Ažuriramo ukupnu cenu narudžbine
         $order->update(['total_price' => $totalPrice]);
 
         return new OrderResource($order);
     }
+
+
 
     /**
      * Display the specified resource.
@@ -143,5 +145,16 @@ class OrderController extends Controller
         }
         $order->delete();
         return response()->json(['message' => 'Order deleted successfully'], 200);
+    }
+
+
+    public function myOrders()
+    {
+        $user = Auth::user();
+
+        // Eager load products da ne poziva dodatno
+        $orders = $user->orders()->with('products')->latest()->get();
+
+        return \App\Http\Resources\OrderResource::collection($orders);
     }
 }

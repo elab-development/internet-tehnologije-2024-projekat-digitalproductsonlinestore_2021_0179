@@ -41,6 +41,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         return $request->user();
     }); // Pregled korisničkog profila bez narudžbina
     Route::apiResource('orders', OrderController::class);
+    Route::get('/my-orders', [OrderController::class, 'myOrders']);
+
 
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
