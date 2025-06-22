@@ -5,7 +5,6 @@ import {
   Settings,
   ShoppingBag,
   Shield,
-  Bell,
   CreditCard,
   LogOut,
   Edit,
@@ -34,35 +33,28 @@ const MyProfilePage = () => {
     }
 
     axios
-      .get("/api/user", {
+      .get("/api/my-orders", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        const user = response.data;
-        setUserInfo({
-          name: user.name,
-          email: user.email,
-          phone: user.phone || "",
-          address: user.address || "",
-        });
+        const ordersData = response.data.data; // zato što koristiš OrderResource::collection
+        setOrders(ordersData);
+
+        if (ordersData.length > 0) {
+          const { user } = ordersData[0]; // uzmi podatke o korisniku iz prvog order-a
+          setUserInfo({
+            name: user.name,
+            email: user.email,
+            phone: "", // Laravel ti ne šalje phone, osim ako ga dodaš
+            address: "", // isto
+          });
+        }
       })
       .catch((error) => {
-        console.error("Failed to load user info", error);
+        console.error("Failed to load user orders", error);
         navigate("/login"); // ako token nije važeći
-      });
-    axios
-      .get("/api/user/orders", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        setOrders(res.data);
-      })
-      .catch((err) => {
-        console.error("Failed to load user orders", err);
       });
   }, [navigate]);
 
@@ -194,6 +186,45 @@ const MyProfilePage = () => {
       </div>
     </div>
   );
+  const renderPurchasesTab = () => (
+    <div className="orders-tab">
+      <h3>My Purchases</h3>
+      <div className="orders-list">
+        {orders.length === 0 ? (
+          <p>You haven’t purchased anything yet.</p>
+        ) : (
+          orders.map((order) => (
+            <div className="order-item" key={order.id}>
+              <div className="order-info">
+                
+                <h4>Purchase #{order.id}</h4>
+                <p>
+                  Date:{" "}
+                  {order.created_at
+                    ? new Date(order.created_at).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })
+                    : "N/A"}
+                </p>
+
+                <p>Total: {order.total_price} RSD</p>
+                {order.products && (
+                  <ul>
+                    {order.products.map((p) => (
+                      <li key={p.id}>{p.name}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <span className="order-status completed">Purchased</span>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
 
   const renderSettingsTab = () => (
     <div className="settings-tab">
@@ -293,6 +324,16 @@ const MyProfilePage = () => {
             </button>
 
             <button
+              className={`nav-item ${
+                activeTab === "purchases" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("purchases")}
+            >
+              <CreditCard size={20} />
+              My Purchases
+            </button>
+
+            <button
               className={`nav-item ${activeTab === "orders" ? "active" : ""}`}
               onClick={() => setActiveTab("orders")}
             >
@@ -326,6 +367,7 @@ const MyProfilePage = () => {
         <div className="profile-content">
           {activeTab === "profile" && renderProfileTab()}
           {activeTab === "orders" && renderOrdersTab()}
+          {activeTab === "purchases" && renderPurchasesTab()}
           {activeTab === "settings" && renderSettingsTab()}
           {activeTab === "privacy" && renderPrivacyTab()}
         </div>

@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ShoppingCart, Star, ArrowLeft, Download, Shield, Clock } from "lucide-react";
+import {
+  ShoppingCart,
+  Star,
+  ArrowLeft,
+  Download,
+  Shield,
+  Clock,
+} from "lucide-react";
 import "../styles/ProductDetailsPage.css";
 import Footer from "../components/Footer.jsx";
+import { handleBuyNow } from "../utils/api.js";
 
 const ProductDetailsPage = () => {
   const { id } = useParams();
@@ -30,46 +38,24 @@ const ProductDetailsPage = () => {
 
   const handleAddToCart = () => {
     const token = sessionStorage.getItem("auth_token");
-    
+
     if (!token) {
       navigate("/login");
       return;
     }
 
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingItem = existingCart.find(item => item.id === product.id);
-    
+    const existingItem = existingCart.find((item) => item.id === product.id);
+
     if (existingItem) {
       alert("This product is already in your cart!");
       return;
     }
-    
+
     existingCart.push({ ...product, quantity: 1 });
     localStorage.setItem("cart", JSON.stringify(existingCart));
-    window.dispatchEvent(new CustomEvent('cartUpdated'));
+    window.dispatchEvent(new CustomEvent("cartUpdated"));
     alert("Product added to cart!");
-  };
-
-  const handleBuyNow = () => {
-    const token = sessionStorage.getItem("auth_token");
-    
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    // Add to cart first
-    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingItem = existingCart.find(item => item.id === product.id);
-    
-    if (!existingItem) {
-      existingCart.push({ ...product, quantity: 1 });
-      localStorage.setItem("cart", JSON.stringify(existingCart));
-      window.dispatchEvent(new CustomEvent('cartUpdated'));
-    }
-    
-    // Navigate to cart
-    navigate("/cart");
   };
 
   if (loading) {
@@ -120,9 +106,11 @@ const ProductDetailsPage = () => {
             </div>
             <div className="image-thumbnails">
               {[1, 2, 3, 4].map((_, index) => (
-                <div 
+                <div
                   key={index}
-                  className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
+                  className={`thumbnail ${
+                    selectedImage === index ? "active" : ""
+                  }`}
                   onClick={() => setSelectedImage(index)}
                 >
                   <img
@@ -150,8 +138,12 @@ const ProductDetailsPage = () => {
             </div>
 
             <div className="product-price">
-              <span className="current-price">{Number(product.price).toFixed(2)} RSD</span>
-              <span className="original-price">{(Number(product.price) * 1.3).toFixed(2)} RSD</span>
+              <span className="current-price">
+                {Number(product.price).toFixed(2)} RSD
+              </span>
+              <span className="original-price">
+                {(Number(product.price) * 1.3).toFixed(2)} RSD
+              </span>
               <span className="discount">25% OFF</span>
             </div>
 
@@ -180,10 +172,22 @@ const ProductDetailsPage = () => {
                 <ShoppingCart size={20} />
                 Add to Cart
               </button>
-              <button className="buy-now-btn" onClick={handleBuyNow}>
+              <button
+                className="buy-now-btn"
+                onClick={() =>
+                  handleBuyNow(
+                    product,
+                    sessionStorage.getItem("auth_token"),
+                    navigate
+                  )
+                }
+              >
                 Buy Now
               </button>
-              <button className="view-cart-btn" onClick={() => navigate("/cart")}>
+              <button
+                className="view-cart-btn"
+                onClick={() => navigate("/cart")}
+              >
                 View Cart
               </button>
             </div>
