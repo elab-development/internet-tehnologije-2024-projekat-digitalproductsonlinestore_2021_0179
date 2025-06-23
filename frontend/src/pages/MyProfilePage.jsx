@@ -21,6 +21,8 @@ const MyProfilePage = () => {
     phone: "+381 60 123 4567",
     address: "Belgrade, Serbia",
   });
+  const isAdmin = JSON.parse(sessionStorage.getItem("user"))?.email === "admin@gmail.com";
+
   const [isEditing, setIsEditing] = useState(false);
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
@@ -323,24 +325,17 @@ const MyProfilePage = () => {
               Profile Information
             </button>
 
-            <button
-              className={`nav-item ${
-                activeTab === "purchases" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("purchases")}
-            >
-              <CreditCard size={20} />
-              My Purchases
-            </button>
+            {!isAdmin && (
+              <button
+                className={`nav-item ${activeTab === "purchases" ? "active" : ""}`}
+                onClick={() => setActiveTab("purchases")}
+              >
+                <CreditCard size={20} />
+                My Purchases
+              </button>
+            )}
 
-            <button
-              className={`nav-item ${activeTab === "orders" ? "active" : ""}`}
-              onClick={() => setActiveTab("orders")}
-            >
-              <ShoppingBag size={20} />
-              My Orders
-            </button>
-
+          
             <button
               className={`nav-item ${activeTab === "settings" ? "active" : ""}`}
               onClick={() => setActiveTab("settings")}
@@ -366,8 +361,7 @@ const MyProfilePage = () => {
 
         <div className="profile-content">
           {activeTab === "profile" && renderProfileTab()}
-          {activeTab === "orders" && renderOrdersTab()}
-          {activeTab === "purchases" && renderPurchasesTab()}
+          {!isAdmin && activeTab === "purchases" && renderPurchasesTab()}
           {activeTab === "settings" && renderSettingsTab()}
           {activeTab === "privacy" && renderPrivacyTab()}
         </div>

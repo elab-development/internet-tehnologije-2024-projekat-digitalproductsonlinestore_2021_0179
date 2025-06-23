@@ -10,14 +10,10 @@ import ProductDetailsPage from "./pages/ProductDetailsPage";
 import CartPage from "./pages/CartPage";
 import AboutPage from "./pages/AboutPage";
 import MyProfilePage from "./pages/MyProfilePage";
-
-import AdminProducts from "./pages/AdminProductsPage";
-// import AdminUserOrders from "./pages/AdminUserOrders"; // kasnije
-// import AdminProfile from "./pages/AdminProfile";       // kasnije
+import AdminUserOrdersPage from "./pages/AdminUserOrdersPage";
 
 import NavBar from "./components/NavBar";
 import PrivateAdminRoute from "./components/PrivateAdminRoute";
-
 
 // Layout for regular users
 function Layout() {
@@ -73,9 +69,10 @@ function App() {
             </PrivateAdminRoute>
           }
         >
-          <Route path="products" element={<AdminProducts />} />
-          {/* <Route path="orders" element={<AdminUserOrders />} /> */}
-          {/* <Route path="profile" element={<AdminProfile />} /> */}
+          <Route path="products" element={<ProductsPage />} />
+          <Route path="orders" element={<AdminUserOrdersPage />} />
+          <Route path="profile" element={<MyProfilePage />} /> 
+          <Route path="about" element={<AboutPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

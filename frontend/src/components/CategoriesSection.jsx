@@ -10,6 +10,7 @@ const CategoriesSection = () => {
   const [categories, setCategories] = useState([]); // Dinamički niz
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const isAdmin = JSON.parse(sessionStorage.getItem("user"))?.email === "admin@gmail.com";
 
   // ➤ Fetch kategorija sa backend API-ja
   useEffect(() => {
@@ -49,7 +50,11 @@ const CategoriesSection = () => {
   };
 
   const handleCardClick = (id) => {
-    navigate(`/products?category_id=${id}`);
+    if (isAdmin) {
+      navigate(`/admin/products?category_id=${id}`);
+    }else{
+      navigate(`/products?category_id=${id}`);
+    }
   };
 
   return (
