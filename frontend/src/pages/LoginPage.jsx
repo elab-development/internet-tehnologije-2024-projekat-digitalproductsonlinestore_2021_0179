@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/AuthForm.css";
 
-const Login = ({ addToken }) => {
+const LoginPage = ({ addToken }) => {
   const [userData, setUserData] = useState({ email: "", password: "" });
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,16 +25,20 @@ const Login = ({ addToken }) => {
 
     axios
       .post("api/login", userData)
+      
       .then((response) => {
-        if (response.data.success) {
-          sessionStorage.setItem("auth_token", response.data.access_token);
-          addToken(response.data.access_token);
-          navigate("/");
-        } else {
-          setErrorMsg("Neispravni podaci.");
-        }
-      })
-      .catch(() => {
+  if (response.data.success && response.data.user) {
+    sessionStorage.setItem("auth_token", response.data.access_token);
+    sessionStorage.setItem("user", JSON.stringify(response.data.user));
+    window.dispatchEvent(new Event("authChanged"));
+    navigate("/");
+  } else {
+    setErrorMsg("Neispravni podaci.");
+  }
+})
+
+      .catch((error) => {
+        console.log("LOGIN ERROR:", error.response);
         setErrorMsg("Došlo je do greške prilikom prijave.");
       })
       .finally(() => setLoading(false));
@@ -98,4 +102,4 @@ const Login = ({ addToken }) => {
   );
 };
 
-export default Login;
+export default LoginPage;
