@@ -83,6 +83,38 @@ const ProductDetailsPage = () => {
       </div>
     );
   }
+  const renderPreview = () => {
+    const previewUrl = product.preview_url;
+
+    switch (product?.category?.name?.toLowerCase()) {
+      case "audio files":
+      case "audio books":
+        return (
+          <audio controls>
+            <source src={previewUrl} type="audio/mpeg" />
+            Your browser does not support audio.
+          </audio>
+        );
+      case "video content":
+        return (
+          <video controls width="100%">
+            <source src={previewUrl} type="video/mp4" />
+            Your browser does not support video.
+          </video>
+        );
+      
+      case "templates":
+      case "fonts":
+      case "web assets":
+        return (
+          <a href={previewUrl} target="_blank" rel="noopener noreferrer">
+            <button className="preview-btn">Preview Document</button>
+          </a>
+        );
+      default:
+        return <p>Preview not available.</p>;
+    }
+  };
 
   return (
     <div className="product-details-page">
@@ -104,26 +136,7 @@ const ProductDetailsPage = () => {
                 alt={product.name}
               />
             </div>
-            <div className="image-thumbnails">
-              {[1, 2, 3, 4].map((_, index) => (
-                <div
-                  key={index}
-                  className={`thumbnail ${
-                    selectedImage === index ? "active" : ""
-                  }`}
-                  onClick={() => setSelectedImage(index)}
-                >
-                  <img
-                    src={
-                      product.image_url
-                        ? `http://127.0.0.1:8000/${product.image_url}`
-                        : "https://images.pexels.com/photos/6335/man-coffee-cup-pen.jpg"
-                    }
-                    alt={`${product.name} ${index + 1}`}
-                  />
-                </div>
-              ))}
-            </div>
+            
           </div>
 
           <div className="product-info">
@@ -150,6 +163,12 @@ const ProductDetailsPage = () => {
             <div className="product-description">
               <h3>Description</h3>
               <p>{product.description}</p>
+            </div>
+
+            {/* Dodato: Preview ili download */}
+            <div className="product-preview">
+              <h3>Preview</h3>
+              {renderPreview()}
             </div>
 
             <div className="product-features">

@@ -21,7 +21,8 @@ const MyProfilePage = () => {
     phone: "+381 60 123 4567",
     address: "Belgrade, Serbia",
   });
-  const isAdmin = JSON.parse(sessionStorage.getItem("user"))?.email === "admin@gmail.com";
+  const isAdmin =
+    JSON.parse(sessionStorage.getItem("user"))?.email === "admin@gmail.com";
 
   const [isEditing, setIsEditing] = useState(false);
   const [orders, setOrders] = useState([]);
@@ -49,8 +50,8 @@ const MyProfilePage = () => {
           setUserInfo({
             name: user.name,
             email: user.email,
-            phone: "", // Laravel ti ne šalje phone, osim ako ga dodaš
-            address: "", // isto
+            phone: "",
+            address: "",
           });
         }
       })
@@ -160,34 +161,7 @@ const MyProfilePage = () => {
     </div>
   );
 
-  const renderOrdersTab = () => (
-    <div className="orders-tab">
-      <h3>My Orders</h3>
-      <div className="orders-list">
-        {orders.length === 0 ? (
-          <p>You have no orders yet.</p>
-        ) : (
-          orders.map((order) => (
-            <div className="order-item" key={order.id}>
-              <div className="order-info">
-                <h4>Order #{order.id}</h4>
-                <p>Date: {new Date(order.created_at).toLocaleDateString()}</p>
-                <p>Total: {order.total_price} RSD</p>
-                {order.products && (
-                  <ul>
-                    {order.products.map((p) => (
-                      <li key={p.id}>{p.name}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              <span className="order-status completed">Completed</span>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
-  );
+  
   const renderPurchasesTab = () => (
     <div className="orders-tab">
       <h3>My Purchases</h3>
@@ -198,7 +172,6 @@ const MyProfilePage = () => {
           orders.map((order) => (
             <div className="order-item" key={order.id}>
               <div className="order-info">
-                
                 <h4>Purchase #{order.id}</h4>
                 <p>
                   Date:{" "}
@@ -215,7 +188,16 @@ const MyProfilePage = () => {
                 {order.products && (
                   <ul>
                     {order.products.map((p) => (
-                      <li key={p.id}>{p.name}</li>
+                      <li key={p.id}>
+                        {p.name}{" "}
+                        <a
+                          href={`http://localhost:8000/storage/files/${p.file_path}`}
+                          download
+                          className="download-link"
+                        >
+                          <button className="download-btn">Download</button>
+                        </a>
+                      </li>
                     ))}
                   </ul>
                 )}
@@ -327,7 +309,9 @@ const MyProfilePage = () => {
 
             {!isAdmin && (
               <button
-                className={`nav-item ${activeTab === "purchases" ? "active" : ""}`}
+                className={`nav-item ${
+                  activeTab === "purchases" ? "active" : ""
+                }`}
                 onClick={() => setActiveTab("purchases")}
               >
                 <CreditCard size={20} />
@@ -335,7 +319,6 @@ const MyProfilePage = () => {
               </button>
             )}
 
-          
             <button
               className={`nav-item ${activeTab === "settings" ? "active" : ""}`}
               onClick={() => setActiveTab("settings")}

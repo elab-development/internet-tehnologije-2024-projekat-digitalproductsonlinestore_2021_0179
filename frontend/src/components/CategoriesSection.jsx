@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const CategoriesSection = () => {
   const scrollRef = useRef(null);
   const navigate = useNavigate();
-  const [categories, setCategories] = useState([]); // Dinamički niz
+  const [categories, setCategories] = useState([]); 
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const isAdmin = JSON.parse(sessionStorage.getItem("user"))?.email === "admin@gmail.com";
