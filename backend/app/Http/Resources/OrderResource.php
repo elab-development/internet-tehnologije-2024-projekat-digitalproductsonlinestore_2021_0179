@@ -12,7 +12,7 @@ class OrderResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public static $wrap ='order';
+    public static $wrap = 'order';
     public function toArray(Request $request): array
     {
         // return parent::toArray($request);
@@ -22,6 +22,8 @@ class OrderResource extends JsonResource
             'id' => $this->id,
             'status' => $this->status,
             'notes' => $this->notes,
+            'file_path' => $this->file_path,
+            
             'user' => [
                 'id' => $this->user->id,
                 'name' => $this->user->name,
@@ -33,11 +35,13 @@ class OrderResource extends JsonResource
                     'name' => $product->name,
                     'price' => $product->price,
                     'quantity' => $product->pivot->quantity,
+                    'file_path' => $product->file_path,
+                    'preview_url' => asset('storage/previews/' . $product->preview_path),
                 ];
             }),
             'total_price' => $this->total_price,
             'created_at' => $this->created_at,
-            
+
         ];
     }
 }

@@ -15,19 +15,19 @@ class ProductController extends Controller
     {
         $query = Product::query();
 
-        if($request->has('name')) {
+        if ($request->has('name')) {
             $query->where('name', 'LIKE', '%' . $request->input('name') . '%');
         }
 
-        if($request->has('min_price')) {
+        if ($request->has('min_price')) {
             $query->where('price', '>=', $request->input('min_price'));
         }
 
-        if($request->has('max_price')) {
+        if ($request->has('max_price')) {
             $query->where('price', '<=', $request->input('max_price'));
         }
 
-        if($request->has('sort_price')){
+        if ($request->has('sort_price')) {
             $sortOrder = $request->input('sort_price') === 'desc' ? 'desc' : 'asc';
             $query->orderBy('price', $sortOrder);
         }
@@ -35,10 +35,10 @@ class ProductController extends Controller
         $products = $query->get();
         return new ProductCollection($products);
     }
-    
+
     public function store(Request $request)
     {
-       
+
         if (!Auth::check()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
@@ -73,7 +73,7 @@ class ProductController extends Controller
 
     public function update(Request $request,  $id)
     {
-        if(!Auth::check()) {
+        if (!Auth::check()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
         if (Auth::user()->role !== 'admin') {
@@ -97,7 +97,7 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        if(!Auth::check()) {
+        if (!Auth::check()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
         if (Auth::user()->role !== 'admin') {
@@ -125,5 +125,35 @@ class ProductController extends Controller
         }
 
         return ProductResource::collection($products);
+    }
+
+    public function preview($id)
+    {
+        $product = Product::findOrFail($id);
+
+        // Primer za PDF preview
+        if (str_ends_with($product->file_path, '.pdf')) {
+            return response()->file(storage_path("app/public/previews/preview_" . $product->file_path));
+        }
+
+        // Primer za sliku sa watermarkom
+        if (str_starts_with($product->file_path, 'images/')) {
+            return response()->file(storage_path("app/public/watermarks/" . $product->file_path));
+        }
+
+        return response()->json(['message' => 'Preview not available.'], 404);
+    }
+
+    public function download($id)
+    {
+        $user = Auth::user();
+        $product = Product::findOrFail($id);
+
+        // Proveri da li je korisnik kupio
+        if (!$user->orders()->whereHas('products', fn($q) => $q->where('products.id', $product->id))->exists()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        return response()->download(storage_path("app/public/" . $product->file_path));
     }
 }

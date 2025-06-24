@@ -46,6 +46,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
+
+    // Laravel routes (api.php)
+    Route::get('/products/{id}/preview', [ProductController::class, 'preview']);
+    Route::get('/products/{id}/download', [ProductController::class, 'download'])->middleware('auth:sanctum');
 });
 
 //za admin korisnike
