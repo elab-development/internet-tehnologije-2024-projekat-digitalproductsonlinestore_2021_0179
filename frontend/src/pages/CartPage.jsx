@@ -3,9 +3,25 @@ import { useNavigate } from "react-router-dom";
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from "lucide-react";
 import "../styles/CartPage.css";
 import { handleBuyNow, handleCheckoutMultiple } from "../utils/api";
+import CurrencySelector from "../components/CurrencySelector";
+import { fetchExchangeRate } from "../utils/fetchExchangeRate";
+
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
+  const [currency, setCurrency] = useState(sessionStorage.getItem("currency") || "EUR");
+  const [rates, setRates] = useState({});
+
+useEffect(() => {
+  fetchExchangeRate("EUR").then(r => {
+    if (r) setRates(r);
+  });
+}, []);
+
+useEffect(() => {
+  sessionStorage.setItem("currency", currency);
+}, [currency]);
+
 
   useEffect(() => {
     const token = sessionStorage.getItem("auth_token");
@@ -89,6 +105,7 @@ const CartPage = () => {
 
         <div className="cart-header">
           <h1 className="cart-title">Shopping Cart</h1>
+          <CurrencySelector currency={currency} setCurrency={setCurrency} rates={rates}/>
           <p className="cart-count">{cartItems.length} items</p>
         </div>
 
@@ -111,12 +128,13 @@ const CartPage = () => {
                   <h3 className="item-name">{item.name}</h3>
                   <p className="item-description">{item.description}</p>
                   <div className="item-price">
-                    {Number(item.price).toFixed(2)} RSD
+                    {(Number(item.price) * (rates[currency] ?? 1)).toFixed(2)} {currency}
+
                   </div>
                 </div>
 
                 <div className="item-total">
-                  {(item.price * item.quantity).toFixed(2)} RSD
+                  {(Number(item.price) * item.quantity * (rates[currency] ?? 1)).toFixed(2)} {currency}
                 </div>
 
                 <button
@@ -147,17 +165,17 @@ const CartPage = () => {
 
               <div className="summary-line">
                 <span>Subtotal</span>
-                <span>{getTotalPrice().toFixed(2)} RSD</span>
+                <span>{(getTotalPrice() * (rates[currency] ?? 1)).toFixed(2)} {currency}</span>
               </div>
 
               <div className="summary-line">
                 <span>Tax</span>
-                <span>{(getTotalPrice() * 0.1).toFixed(2)} RSD</span>
+                <span>{(getTotalPrice() * 0.1 * (rates[currency] ?? 1)).toFixed(2)} {currency}</span>
               </div>
 
               <div className="summary-line total">
                 <span>Total</span>
-                <span>{(getTotalPrice() * 1.1).toFixed(2)} RSD</span>
+                <span>{(getTotalPrice() * 1.1 * (rates[currency] ?? 1)).toFixed(2)} {currency}</span>
               </div>
 
               <button className="checkout-btn" onClick={handleCheckout}>

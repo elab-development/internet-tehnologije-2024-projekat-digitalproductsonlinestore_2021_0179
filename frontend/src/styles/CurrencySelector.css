@@ -1,0 +1,18 @@
+.select-currency {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #222; /* tamna pozadina */
+  color: #0af;            /* svetlo plavi tekst */
+  font-size: 1rem;
+  appearance: none;       /* uklanja default strelicu */
+  background-image: url("data:image/svg+xml,<svg fill='%230af' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1em;
+}
+
+.select-currency:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #0af50;
+}

@@ -105,13 +105,13 @@ const CategoriesSection = () => {
 // ➤ Pomoćna funkcija za boju po imenu kategorije
 const getCategoryColor = (name) => {
   const colorMap = {
-    "Audio books": "rgb(222, 225, 38)",
+    "Audio Books": "rgb(32, 57, 182)",
     "Audio Files": "rgba(33, 158, 188, 1)",
-    "Video Content": "rgba(251, 133, 0, 1)",
+    "Video Content": "rgb(6, 140, 249)",
     "Digital Art": "rgba(142, 202, 230, 1)",
-    Templates: "rgba(255, 183, 3, 1)",
-    Fonts: "rgb(29, 130, 180)",
-    "Web Assets": "rgba(104, 104, 236, 0.8)",
+    "Templates": "rgb(52, 12, 254)",
+    "Fonts": "rgb(29, 130, 180)",
+    "Web Assets": "rgba(74, 74, 222, 0.8)",
   };
 
   return colorMap[name] || "#999";

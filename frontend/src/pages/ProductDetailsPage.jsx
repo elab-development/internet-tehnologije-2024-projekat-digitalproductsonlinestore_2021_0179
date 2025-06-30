@@ -12,13 +12,29 @@ import {
 import "../styles/ProductDetailsPage.css";
 import Footer from "../components/Footer.jsx";
 import { handleBuyNow } from "../utils/api.js";
+import CurrencySelector from "../components/CurrencySelector";
+import { fetchExchangeRate } from "../utils/fetchExchangeRate";
+
 
 const ProductDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedImage, setSelectedImage] = useState(0);
+  const [currency, setCurrency] = useState(sessionStorage.getItem("currency") || "EUR");
+const [rates, setRates] = useState({});
+
+useEffect(() => {
+  fetchExchangeRate("EUR").then(r => {
+    if (r) setRates(r);
+  });
+}, []);
+
+useEffect(() => {
+  sessionStorage.setItem("currency", currency);
+}, [currency]);
+
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -142,6 +158,7 @@ const ProductDetailsPage = () => {
           <div className="product-info">
             <div className="product-header">
               <h1 className="product-title">{product.name}</h1>
+              <CurrencySelector currency={currency} setCurrency={setCurrency} rates={rates} />
               <div className="product-rating">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} size={16} fill="#ffd700" color="#ffd700" />
@@ -152,10 +169,10 @@ const ProductDetailsPage = () => {
 
             <div className="product-price">
               <span className="current-price">
-                {Number(product.price).toFixed(2)} RSD
+                {(Number(product.price) * (rates[currency] ?? 1)).toFixed(2)} {currency}
               </span>
               <span className="original-price">
-                {(Number(product.price) * 1.3).toFixed(2)} RSD
+                {(Number(product.price) * (rates[currency] ?? 1)).toFixed(2)} {currency}
               </span>
               <span className="discount">25% OFF</span>
             </div>

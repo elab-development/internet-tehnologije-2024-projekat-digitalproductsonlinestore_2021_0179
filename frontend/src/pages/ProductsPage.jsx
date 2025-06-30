@@ -10,6 +10,9 @@ import {
 } from "lucide-react";
 import "../styles/ProductsPage.css";
 import Footer from "../components/Footer.jsx";
+import CurrencySelector from "../components/CurrencySelector";
+import { fetchExchangeRate } from "../utils/fetchExchangeRate";
+
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -34,6 +37,19 @@ const ProductsPage = () => {
   const token = sessionStorage.getItem("auth_token");
   const location = useLocation();
   const navigate = useNavigate();
+  const [currency, setCurrency] = useState(sessionStorage.getItem("currency") || "EUR");
+  const [rates, setRates] = useState({});
+
+useEffect(() => {
+  fetchExchangeRate("EUR").then(r => {
+    if (r) setRates(r);
+  });
+}, []);
+
+useEffect(() => {
+  sessionStorage.setItem("currency", currency);
+}, [currency]);
+
 
   const getCategoryId = () => {
     const params = new URLSearchParams(location.search);
@@ -89,10 +105,10 @@ const ProductsPage = () => {
         sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
         break;
       case "price-low":
-        sortedProducts.sort((a, b) => Number(a.price) - Number(b.price));
+        sortedProducts.sort((a, b) => Number(a.price) * (rates[currency] ?? 1) - Number(b.price) * (rates[currency] ?? 1));
         break;
       case "price-high":
-        sortedProducts.sort((a, b) => Number(b.price) - Number(a.price));
+        sortedProducts.sort((a, b) => Number(b.price) * (rates[currency] ?? 1) - Number(a.price) * (rates[currency] ?? 1));
         break;
       default:
         break;
@@ -196,6 +212,8 @@ const ProductsPage = () => {
       <div className="products-container">
         <div className="products-header">
           <h1 className="products-title">{categoryName || "All Products"}</h1>
+          <CurrencySelector currency={currency} setCurrency={setCurrency} rates={rates} />
+
           <div className="products-controls">
             <button
               className="filter-toggle-btn"
@@ -346,7 +364,7 @@ const ProductsPage = () => {
                     <div className="product-footer">
                       <div className="product-price">
                         <span className="price-amount">
-                          {Number(product.price).toFixed(2)} EUR
+                          {(Number(product.price) * (rates[currency] ?? 1)).toFixed(2)}{" "} {currency}
                         </span>
                       </div>
                       {user?.email === "admin@gmail.com" ? (
