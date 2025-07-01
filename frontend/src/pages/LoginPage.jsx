@@ -25,17 +25,17 @@ const LoginPage = ({ addToken }) => {
 
     axios
       .post("api/login", userData)
-      
+
       .then((response) => {
-  if (response.data.success && response.data.user) {
-    sessionStorage.setItem("auth_token", response.data.access_token);
-    sessionStorage.setItem("user", JSON.stringify(response.data.user));
-    window.dispatchEvent(new Event("authChanged"));
-    navigate("/");
-  } else {
-    setErrorMsg("Neispravni podaci.");
-  }
-})
+        if (response.data.success && response.data.user) {
+          sessionStorage.setItem("auth_token", response.data.access_token);
+          sessionStorage.setItem("user", JSON.stringify(response.data.user));
+          window.dispatchEvent(new Event("authChanged"));
+          navigate("/");
+        } else {
+          setErrorMsg("Neispravni podaci.");
+        }
+      })
 
       .catch((error) => {
         console.log("LOGIN ERROR:", error.response);
@@ -95,6 +95,11 @@ const LoginPage = ({ addToken }) => {
           No account?{" "}
           <a href="/register" className="text-primary fw-bold">
             Register
+          </a>
+        </p>
+        <p className="text-center">
+          <a href="/forgot-password" className="text-secondary">
+            Forgot Password?
           </a>
         </p>
       </div>

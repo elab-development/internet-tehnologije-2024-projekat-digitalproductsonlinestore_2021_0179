@@ -11,6 +11,8 @@ import CartPage from "./pages/CartPage";
 import AboutPage from "./pages/AboutPage";
 import MyProfilePage from "./pages/MyProfilePage";
 import AdminUserOrdersPage from "./pages/AdminUserOrdersPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 import NavBar from "./components/NavBar";
 import PrivateAdminRoute from "./components/PrivateAdminRoute";
@@ -48,7 +50,9 @@ function App() {
         {/* Auth routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        
         {/* Regular user layout */}
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
