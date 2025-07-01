@@ -23,6 +23,9 @@ use GuzzleHttp\Middleware;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
+
 
 //za neulogovane korisnike
 Route::group([], function () {
@@ -44,8 +47,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/my-orders', [OrderController::class, 'myOrders']);
 
 
-    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
 
     // Laravel routes (api.php)
     Route::get('/products/{id}/preview', [ProductController::class, 'preview']);
