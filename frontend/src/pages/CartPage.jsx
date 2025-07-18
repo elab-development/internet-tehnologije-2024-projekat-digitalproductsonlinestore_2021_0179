@@ -66,7 +66,7 @@ useEffect(() => {
 
   const handleCheckout = () => {
   const token = sessionStorage.getItem("auth_token");
-  handleCheckoutMultiple(cartItems, token, navigate);
+  handleCheckoutMultiple(cartItems, token, () => navigate("/profile#purchases"));
 };
 
 
@@ -149,7 +149,7 @@ useEffect(() => {
                     handleBuyNow(
                       item,
                       sessionStorage.getItem("auth_token"),
-                      navigate
+                      () => navigate("/profile#purchases")
                     )
                   }
                 >

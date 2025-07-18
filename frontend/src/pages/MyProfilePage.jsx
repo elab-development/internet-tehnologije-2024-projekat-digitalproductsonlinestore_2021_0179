@@ -15,12 +15,7 @@ import Footer from "../components/Footer.jsx";
 import axios from "axios";
 
 const MyProfilePage = () => {
-  const [userInfo, setUserInfo] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+381 60 123 4567",
-    address: "Belgrade, Serbia",
-  });
+  const [userInfo, setUserInfo] = useState(null);
   const isAdmin =
     JSON.parse(sessionStorage.getItem("user"))?.email === "admin@gmail.com";
 
@@ -28,7 +23,11 @@ const MyProfilePage = () => {
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const currentSection = location.hash?.replace("#", "") || "info"; // podrazumevano "info"
+  const [joke, setJoke] = useState(null);
+  const [showJoke, setShowJoke] = useState(false);
+  const [currentSection, setCurrentSection] = useState(
+    location.hash?.replace("#", "") || "profile"
+  );
 
   const handleDownload = async (productId, productName) => {
     const token = sessionStorage.getItem("auth_token");
@@ -73,6 +72,10 @@ const MyProfilePage = () => {
       }
     }
   };
+  useEffect(() => {
+    const section = location.hash?.replace("#", "") || "profile";
+    setCurrentSection(section);
+  }, [location]);
 
   useEffect(() => {
     const hash = location.hash.replace("#", "");
@@ -83,6 +86,15 @@ const MyProfilePage = () => {
       }
     }
   }, [location]);
+
+  useEffect(() => {
+    axios
+      .get("https://icanhazdadjoke.com/", {
+        headers: { Accept: "application/json" },
+      })
+      .then((res) => setJoke(res.data.joke))
+      .catch((err) => console.error("Joke API error:", err));
+  }, []);
 
   useEffect(() => {
     const token = sessionStorage.getItem("auth_token");
@@ -117,28 +129,27 @@ const MyProfilePage = () => {
       });
   }, [navigate]);
   const getFileTypeLabel = (filePath) => {
-  const ext = filePath.split('.').pop().toLowerCase();
+    const ext = filePath.split(".").pop().toLowerCase();
 
-  switch (ext) {
-    case "pdf":
-      return "PDF";
-    case "mp3":
-      return "Audio";
-    case "mp4":
-      return "Video";
-    case "png":
-    case "jpg":
-    case "jpeg":
-      return "Image";
-    case "zip":
-      return "Archive";
-    case "txt":
-      return "Text";
-    default:
-      return "File";
-  }
-};
-
+    switch (ext) {
+      case "pdf":
+        return "PDF";
+      case "mp3":
+        return "Audio";
+      case "mp4":
+        return "Video";
+      case "png":
+      case "jpg":
+      case "jpeg":
+        return "Image";
+      case "zip":
+        return "Archive";
+      case "txt":
+        return "Text";
+      default:
+        return "File";
+    }
+  };
 
   const handleLogout = () => {
     sessionStorage.removeItem("auth_token");
@@ -151,94 +162,113 @@ const MyProfilePage = () => {
     alert("Profile updated successfully!");
   };
 
-  const renderProfileTab = () => (
-    <div className="profile-tab">
-      <div className="profile-header">
-        <div className="profile-avatar">
-          <User size={48} />
-        </div>
-        <div className="profile-info">
-          <h2>{userInfo.name}</h2>
-          <p>{userInfo.email}</p>
-        </div>
-        <button
-          className="edit-profile-btn"
-          onClick={() => setIsEditing(!isEditing)}
-        >
-          <Edit size={16} />
-          {isEditing ? "Cancel" : "Edit Profile"}
-        </button>
-      </div>
-
-      <div className="profile-details">
-        <div className="detail-group">
-          <label>Full Name</label>
-          {isEditing ? (
-            <input
-              type="text"
-              value={userInfo.name}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, name: e.target.value })
-              }
-            />
-          ) : (
-            <span>{userInfo.name}</span>
-          )}
-        </div>
-
-        <div className="detail-group">
-          <label>Email</label>
-          {isEditing ? (
-            <input
-              type="email"
-              value={userInfo.email}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, email: e.target.value })
-              }
-            />
-          ) : (
-            <span>{userInfo.email}</span>
-          )}
-        </div>
-
-        <div className="detail-group">
-          <label>Phone</label>
-          {isEditing ? (
-            <input
-              type="tel"
-              value={userInfo.phone}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, phone: e.target.value })
-              }
-            />
-          ) : (
-            <span>{userInfo.phone}</span>
-          )}
-        </div>
-
-        <div className="detail-group">
-          <label>Address</label>
-          {isEditing ? (
-            <input
-              type="text"
-              value={userInfo.address}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, address: e.target.value })
-              }
-            />
-          ) : (
-            <span>{userInfo.address}</span>
-          )}
-        </div>
-
-        {isEditing && (
-          <button className="save-btn" onClick={handleSaveProfile}>
-            Save Changes
+  const renderProfileTab = () => {
+    if (!userInfo) {
+      return <div className="loading-spinner"></div>;
+    }
+    return (
+      <div className="profile-tab">
+        <div className="profile-header">
+          <div className="profile-avatar">
+            <User size={48} />
+          </div>
+          <div className="profile-info">
+            <h2>{userInfo.name}</h2>
+            <p>{userInfo.email}</p>
+          </div>
+          <button
+            className="edit-profile-btn"
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            <Edit size={16} />
+            {isEditing ? "Cancel" : "Edit Profile"}
           </button>
-        )}
+        </div>
+
+        <div className="profile-details">
+          <div className="detail-group">
+            <label>Full Name</label>
+            {isEditing ? (
+              <input
+                type="text"
+                value={userInfo.name}
+                onChange={(e) =>
+                  setUserInfo({ ...userInfo, name: e.target.value })
+                }
+              />
+            ) : (
+              <span>{userInfo.name}</span>
+            )}
+          </div>
+
+          <div className="detail-group">
+            <label>Email</label>
+            {isEditing ? (
+              <input
+                type="email"
+                value={userInfo.email}
+                onChange={(e) =>
+                  setUserInfo({ ...userInfo, email: e.target.value })
+                }
+              />
+            ) : (
+              <span>{userInfo.email}</span>
+            )}
+          </div>
+
+          <div className="detail-group">
+            <label>Phone</label>
+            {isEditing ? (
+              <input
+                type="tel"
+                value={userInfo.phone}
+                onChange={(e) =>
+                  setUserInfo({ ...userInfo, phone: e.target.value })
+                }
+              />
+            ) : (
+              <span>{userInfo.phone}</span>
+            )}
+          </div>
+
+          <div className="detail-group">
+            <label>Address</label>
+            {isEditing ? (
+              <input
+                type="text"
+                value={userInfo.address}
+                onChange={(e) =>
+                  setUserInfo({ ...userInfo, address: e.target.value })
+                }
+              />
+            ) : (
+              <span>{userInfo.address}</span>
+            )}
+          </div>
+          <div className="joke-trigger">
+            {!showJoke && joke && (
+              <button onClick={() => setShowJoke(true)} className="joke-btn">
+                🤭 Show daily joke
+              </button>
+            )}
+
+            {showJoke && joke && (
+              <div className="joke-box">
+                <h4>Daily Joke</h4>
+                <p>{joke}</p>
+              </div>
+            )}
+          </div>
+
+          {isEditing && (
+            <button className="save-btn" onClick={handleSaveProfile}>
+              Save Changes
+            </button>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderPurchasesTab = () => (
     <div className="orders-tab">
@@ -383,7 +413,9 @@ const MyProfilePage = () => {
                     ? "active"
                     : ""
                 }`}
-                onClick={() => (window.location.hash = "profile")}
+                onClick={() => {
+                  navigate("#profile", { replace: true });
+                }}
               >
                 <User size={20} />
                 Profile Information

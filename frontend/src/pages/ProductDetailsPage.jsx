@@ -252,7 +252,8 @@ const ProductDetailsPage = () => {
                   handleBuyNow(
                     product,
                     sessionStorage.getItem("auth_token"),
-                    navigate
+                    () => navigate("/profile#purchases")
+
                   )
                 }
               >

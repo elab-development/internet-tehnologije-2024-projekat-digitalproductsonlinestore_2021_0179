@@ -351,3 +351,57 @@
   color: #000;
   transform: translateY(-2px);
 }
+.loading-spinner {
+  text-align: center;
+  padding: 2rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.joke-trigger {
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.joke-btn {
+  background-color: #ff9900;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.joke-btn:hover {
+  background-color: #ffaa33;
+}
+
+.joke-box {
+  margin-top: 1rem;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #ff9900;
+  border-radius: 12px;
+  color: #ccc;
+  backdrop-filter: blur(6px);
+  font-style: italic;
+  box-shadow: 0 0 10px rgba(255, 153, 0, 0.3);
+}
+
+.joke-box h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffcc70;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.joke-box p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
