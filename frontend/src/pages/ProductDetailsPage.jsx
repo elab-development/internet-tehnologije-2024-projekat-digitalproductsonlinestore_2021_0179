@@ -15,26 +15,60 @@ import { handleBuyNow } from "../utils/api.js";
 import CurrencySelector from "../components/CurrencySelector";
 import { fetchExchangeRate } from "../utils/fetchExchangeRate";
 
-
 const ProductDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [currency, setCurrency] = useState(sessionStorage.getItem("currency") || "EUR");
-const [rates, setRates] = useState({});
+  const [currency, setCurrency] = useState(
+    sessionStorage.getItem("currency") || "EUR"
+  );
+  const [rates, setRates] = useState({});
+  const [pdfPreview, setPdfPreview] = useState(null);
+  const getFileFormat = (filePath) => {
+    const ext = filePath?.split(".").pop().toLowerCase();
+    switch (ext) {
+      case "pdf":
+        return "PDF Document";
+      case "mp3":
+        return "MP3 Audio";
+      case "mp4":
+        return "MP4 Video";
+      case "png":
+        return "PNG Image";
+      case "jpg":
+      case "jpeg":
+        return "JPEG Image";
+    
+      default:
+        return ext?.toUpperCase() + " File";
+    }
+  };
 
-useEffect(() => {
-  fetchExchangeRate("EUR").then(r => {
-    if (r) setRates(r);
-  });
-}, []);
+  useEffect(() => {
+    if (product?.file_path?.endsWith(".pdf")) {
+      const filename = product.file_path.split("/").pop();
 
-useEffect(() => {
-  sessionStorage.setItem("currency", currency);
-}, [currency]);
+      axios
+        .get(`/api/preview-pdf/${filename}`)
+        .then((res) => {
+          setPdfPreview(res.data.preview);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch PDF preview:", err);
+        });
+    }
+  }, [product]);
 
+  useEffect(() => {
+    fetchExchangeRate("EUR").then((r) => {
+      if (r) setRates(r);
+    });
+  }, []);
 
+  useEffect(() => {
+    sessionStorage.setItem("currency", currency);
+  }, [currency]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -118,7 +152,7 @@ useEffect(() => {
             Your browser does not support video.
           </video>
         );
-      
+
       case "templates":
       case "fonts":
       case "web assets":
@@ -152,13 +186,16 @@ useEffect(() => {
                 alt={product.name}
               />
             </div>
-            
           </div>
 
           <div className="product-info">
             <div className="product-header">
               <h1 className="product-title">{product.name}</h1>
-              <CurrencySelector currency={currency} setCurrency={setCurrency} rates={rates} />
+              <CurrencySelector
+                currency={currency}
+                setCurrency={setCurrency}
+                rates={rates}
+              />
               <div className="product-rating">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} size={16} fill="#ffd700" color="#ffd700" />
@@ -169,10 +206,12 @@ useEffect(() => {
 
             <div className="product-price">
               <span className="current-price">
-                {(Number(product.price) * (rates[currency] ?? 1)).toFixed(2)} {currency}
+                {(Number(product.price) * (rates[currency] ?? 1)).toFixed(2)}{" "}
+                {currency}
               </span>
               <span className="original-price">
-                {(Number(product.price) * (rates[currency] ?? 1)).toFixed(2)} {currency}
+                {(Number(product.price) * (rates[currency] ?? 1)).toFixed(2)}{" "}
+                {currency}
               </span>
               <span className="discount">25% OFF</span>
             </div>
@@ -182,7 +221,6 @@ useEffect(() => {
               <p>{product.description}</p>
             </div>
 
-            {/* Dodato: Preview ili download */}
             <div className="product-preview">
               <h3>Preview</h3>
               {renderPreview()}
@@ -233,19 +271,36 @@ useEffect(() => {
               <div className="specs-grid">
                 <div className="spec-item">
                   <span className="spec-label">File Format:</span>
-                  <span className="spec-value">PSD, AI, PNG</span>
+                  <span className="spec-value">
+                    {getFileFormat(product.file_path)}
+                  </span>
                 </div>
                 <div className="spec-item">
-                  <span className="spec-label">Resolution:</span>
-                  <span className="spec-value">300 DPI</span>
-                </div>
-                <div className="spec-item">
-                  <span className="spec-label">Size:</span>
-                  <span className="spec-value">A4, Letter</span>
+                  <span className="spec-label">Playable in Browser:</span>
+                  <span className="spec-value">
+                    {["mp3", "mp4", "pdf"].includes(
+                      product.file_path?.split(".").pop().toLowerCase()
+                    )
+                      ? "Yes"
+                      : "No"}
+                  </span>
                 </div>
                 <div className="spec-item">
                   <span className="spec-label">License:</span>
                   <span className="spec-value">Commercial Use</span>
+                </div>
+
+                <div className="spec-item">
+                  <span className="spec-label">Recommended Use:</span>
+                  <span className="spec-value">
+                    {product.category?.name === "Templates"
+                      ? "Printable Template"
+                      : product.category?.name === "Audio files"
+                      ? "Personal or Promo Use"
+                      : product.category?.name === "Digital art"
+                      ? "Creative Projects"
+                      : "Digital Use"}
+                  </span>
                 </div>
               </div>
             </div>

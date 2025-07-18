@@ -14,6 +14,7 @@ import AdminUserOrdersPage from "./pages/AdminUserOrdersPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 
+
 import NavBar from "./components/NavBar";
 import PrivateAdminRoute from "./components/PrivateAdminRoute";
 
@@ -52,7 +53,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        
+
         {/* Regular user layout */}
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
@@ -77,6 +78,8 @@ function App() {
           <Route path="orders" element={<AdminUserOrdersPage />} />
           <Route path="profile" element={<MyProfilePage />} /> 
           <Route path="about" element={<AboutPage />} />
+          
+
         </Route>
       </Routes>
     </BrowserRouter>

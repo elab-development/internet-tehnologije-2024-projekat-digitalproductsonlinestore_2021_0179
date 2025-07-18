@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   User,
   Settings,
@@ -14,7 +15,6 @@ import Footer from "../components/Footer.jsx";
 import axios from "axios";
 
 const MyProfilePage = () => {
-  const [activeTab, setActiveTab] = useState("profile");
   const [userInfo, setUserInfo] = useState({
     name: "John Doe",
     email: "john.doe@example.com",
@@ -27,6 +27,62 @@ const MyProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentSection = location.hash?.replace("#", "") || "info"; // podrazumevano "info"
+
+  const handleDownload = async (productId, productName) => {
+    const token = sessionStorage.getItem("auth_token");
+    console.log("token:", token);
+
+    try {
+      const response = await axios.get(`/api/products/${productId}/download`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: "blob", // OBAVEZNO
+      });
+
+      console.log("Response headers:", response.headers);
+      console.log("Response data type:", response.data.type);
+
+      const mimeType = response.headers["content-type"];
+      const blob = new Blob([response.data], { type: mimeType });
+      const url = window.URL.createObjectURL(blob);
+
+      const extensionMap = {
+        "application/pdf": ".pdf",
+        "audio/mpeg": ".mp3",
+        "audio/mp3": ".mp3",
+        "video/mp4": ".mp4",
+        "image/png": ".png",
+        "image/jpeg": ".jpg",
+        "image/jpg": ".jpg",
+      };
+
+      const ext = extensionMap[mimeType] || "";
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = productName + ext;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      alert("Download failed. You may not have access.");
+      console.error("Download error:", error.response?.status);
+      if (error.response?.status === 404) {
+        alert("Fajl ne postoji ili proizvod ne postoji.");
+      }
+    }
+  };
+
+  useEffect(() => {
+    const hash = location.hash.replace("#", "");
+    if (hash) {
+      const section = document.getElementById(hash);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location]);
 
   useEffect(() => {
     const token = sessionStorage.getItem("auth_token");
@@ -60,6 +116,29 @@ const MyProfilePage = () => {
         navigate("/login"); // ako token nije važeći
       });
   }, [navigate]);
+  const getFileTypeLabel = (filePath) => {
+  const ext = filePath.split('.').pop().toLowerCase();
+
+  switch (ext) {
+    case "pdf":
+      return "PDF";
+    case "mp3":
+      return "Audio";
+    case "mp4":
+      return "Video";
+    case "png":
+    case "jpg":
+    case "jpeg":
+      return "Image";
+    case "zip":
+      return "Archive";
+    case "txt":
+      return "Text";
+    default:
+      return "File";
+  }
+};
+
 
   const handleLogout = () => {
     sessionStorage.removeItem("auth_token");
@@ -161,7 +240,6 @@ const MyProfilePage = () => {
     </div>
   );
 
-  
   const renderPurchasesTab = () => (
     <div className="orders-tab">
       <h3>My Purchases</h3>
@@ -190,13 +268,12 @@ const MyProfilePage = () => {
                     {order.products.map((p) => (
                       <li key={p.id}>
                         {p.name}{" "}
-                        <a
-                          href={`http://localhost:8000/storage/files/${p.file_path}`}
-                          download
-                          className="download-link"
+                        <button
+                          className="download-btn"
+                          onClick={() => handleDownload(p.id, p.name)}
                         >
-                          <button className="download-btn">Download</button>
-                        </a>
+                          Download {getFileTypeLabel(p.file_path)}
+                        </button>
                       </li>
                     ))}
                   </ul>
@@ -299,20 +376,26 @@ const MyProfilePage = () => {
           </div>
 
           <nav className="sidebar-nav">
-            <button
-              className={`nav-item ${activeTab === "profile" ? "active" : ""}`}
-              onClick={() => setActiveTab("profile")}
-            >
-              <User size={20} />
-              Profile Information
-            </button>
+            <section id="profile" className="profile-information">
+              <button
+                className={`nav-item ${
+                  location.hash === "#profile" || location.hash === ""
+                    ? "active"
+                    : ""
+                }`}
+                onClick={() => (window.location.hash = "profile")}
+              >
+                <User size={20} />
+                Profile Information
+              </button>
+            </section>
 
             {!isAdmin && (
               <button
                 className={`nav-item ${
-                  activeTab === "purchases" ? "active" : ""
+                  location.hash === "#purchases" ? "active" : ""
                 }`}
-                onClick={() => setActiveTab("purchases")}
+                onClick={() => (window.location.hash = "purchases")}
               >
                 <CreditCard size={20} />
                 My Purchases
@@ -320,16 +403,20 @@ const MyProfilePage = () => {
             )}
 
             <button
-              className={`nav-item ${activeTab === "settings" ? "active" : ""}`}
-              onClick={() => setActiveTab("settings")}
+              className={`nav-item ${
+                location.hash === "#settings" ? "active" : ""
+              }`}
+              onClick={() => (window.location.hash = "settings")}
             >
               <Settings size={20} />
               Settings
             </button>
 
             <button
-              className={`nav-item ${activeTab === "privacy" ? "active" : ""}`}
-              onClick={() => setActiveTab("privacy")}
+              className={`nav-item ${
+                location.hash === "#privacy" ? "active" : ""
+              }`}
+              onClick={() => (window.location.hash = "privacy")}
             >
               <Shield size={20} />
               Privacy & Policy
@@ -343,10 +430,10 @@ const MyProfilePage = () => {
         </div>
 
         <div className="profile-content">
-          {activeTab === "profile" && renderProfileTab()}
-          {!isAdmin && activeTab === "purchases" && renderPurchasesTab()}
-          {activeTab === "settings" && renderSettingsTab()}
-          {activeTab === "privacy" && renderPrivacyTab()}
+          {currentSection === "profile" && renderProfileTab()}
+          {!isAdmin && currentSection === "purchases" && renderPurchasesTab()}
+          {currentSection === "settings" && renderSettingsTab()}
+          {currentSection === "privacy" && renderPrivacyTab()}
         </div>
       </div>
       <Footer />

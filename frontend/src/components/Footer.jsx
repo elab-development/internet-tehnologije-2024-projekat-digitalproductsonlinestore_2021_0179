@@ -8,8 +8,8 @@ const Footer = () => {
       <div className="container d-flex flex-column flex-md-row justify-content-between align-items-center">
         {/* Logo i naziv */}
         <div className="mb-3 mb-md-0 d-flex align-items-center gap-2">
-          <img src="/logo.png" alt="Lootify Logo" height="30" />
-          <span className="fw-bold">Lootify</span>
+          <img src="/logo.png" alt="Cloudery Logo" height="30" />
+          <span className="fw-bold">Cloudery</span>
         </div>
 
         {/* Linkovi */}
@@ -21,7 +21,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="footer-copy text-secondary small">
-          &copy; {new Date().getFullYear()} Lootify. All rights reserved.
+          &copy; {new Date().getFullYear()} Cloudery. All rights reserved.
         </div>
       </div>
     </footer>
