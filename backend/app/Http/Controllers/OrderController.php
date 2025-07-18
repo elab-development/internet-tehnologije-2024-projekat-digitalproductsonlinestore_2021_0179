@@ -157,4 +157,21 @@ class OrderController extends Controller
 
         return \App\Http\Resources\OrderResource::collection($orders);
     }
+
+    public function getPurchasesPerCategory()
+    {
+        if (!Auth::check() || Auth::user()->email !== 'admin@gmail.com') {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        $data = DB::table('order_product')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->select('categories.name', DB::raw('COUNT(order_product.order_id) as total'))
+            ->groupBy('categories.name')
+            ->orderByDesc('total')
+            ->get();
+            
+        return response()->json($data);
+    }
 }

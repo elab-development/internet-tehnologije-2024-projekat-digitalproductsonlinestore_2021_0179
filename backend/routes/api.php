@@ -1,14 +1,15 @@
 <?php
 
+use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
+use App\Http\Resources\OrderResource;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PreviewController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\OrderController;
-use App\Http\Resources\OrderResource;
-use GuzzleHttp\Middleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +47,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('orders', OrderController::class);
     Route::get('/my-orders', [OrderController::class, 'myOrders']);
 
+    Route::get('/preview-pdf/{filename}', [PreviewController::class, 'getPreview']);
 
 
     // Laravel routes (api.php)
@@ -75,4 +77,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Pregled svih korisnika (samo admin)
     Route::get('/auth/users', [AuthController::class, 'getAllUsers']);
+
+    //Route::get('/admin/purchases-per-category', [OrderController::class, 'getPurchasesPerCategory']);
+
 });

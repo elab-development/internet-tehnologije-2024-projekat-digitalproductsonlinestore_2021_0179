@@ -149,11 +149,38 @@ class ProductController extends Controller
         $user = Auth::user();
         $product = Product::findOrFail($id);
 
-        // Proveri da li je korisnik kupio
-        if (!$user->orders()->whereHas('products', fn($q) => $q->where('products.id', $product->id))->exists()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+        // Dodaj 'files/' ako nije uključeno
+        $relativePath = str_starts_with($product->file_path, 'files/')
+            ? $product->file_path
+            : 'files/' . $product->file_path;
+
+        $filePath = storage_path("app/public/" . $relativePath);
+
+        if (!file_exists($filePath)) {
+            return response()->json(['message' => 'File not found on server'], 404);
         }
 
-        return response()->download(storage_path("app/public/" . $product->file_path));
+        // Provera da li je korisnik kupio proizvod
+        $hasPurchased = $user->orders()
+            ->whereHas('products', fn($q) => $q->where('products.id', $product->id))
+            ->exists();
+
+        if (!$hasPurchased) {
+            return response()->json(['message' => 'Unauthorized – product not purchased'], 403);
+        }
+
+        // Dobavi mime type i ekstenziju
+        $mimeType = mime_content_type($filePath);
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+
+        // Napravi bezbedan naziv fajla
+        $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $product->name) . '.' . $extension;
+
+        // Streamuj fajl sa MIME tipom
+        return response()->streamDownload(function () use ($filePath) {
+            readfile($filePath);
+        }, $safeName, [
+            'Content-Type' => $mimeType,
+        ]);
     }
 }
