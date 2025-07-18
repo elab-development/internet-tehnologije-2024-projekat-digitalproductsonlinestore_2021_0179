@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/AdminUserOrdersPage.css";
+import { useNavigate } from "react-router-dom";
 
 const AdminUserOrdersPage = () => {
   const [users, setUsers] = useState([]);
@@ -8,6 +9,7 @@ const AdminUserOrdersPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const token = sessionStorage.getItem("auth_token");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUsers();
@@ -52,6 +54,12 @@ const AdminUserOrdersPage = () => {
   return (
     <div className="admin-orders-page">
       <h1 className="admin-title">Users' Orders</h1>
+      <button
+        className="view-stats-btn"
+        onClick={() => navigate("/admin/stats")}
+      >
+        View Purchase Statistics
+      </button>
 
       <input
         type="text"
@@ -93,7 +101,7 @@ const AdminUserOrdersPage = () => {
                 <ul>
                   {order.products.map((product) => (
                     <li key={product.id}>
-                      {product.name} - ${product.price} (
+                      {product.name} - ${product.price} 
                     </li>
                   ))}
                 </ul>

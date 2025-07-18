@@ -1,0 +1,37 @@
+/* src/styles/AdminStatsPage.css */
+
+.admin-stats-page {
+  background-color: #121212; /* tamna pozadina */
+  padding: 120px 30px 30px;
+  color: #0dcaf0;
+  min-height: 100vh;
+}
+
+.admin-stats-page h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0dcaf0;
+}
+
+
+.filter-controls {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-controls select,
+.filter-controls input,
+.filter-controls button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #0dcaf0;
+  background-color: #111;
+  color: #0dcaf0;
+}
+.admin-stats-page h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}

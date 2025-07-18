@@ -62,3 +62,38 @@
 .no-orders {
   color: #aaa;
 }
+.chart-card {
+  background: rgba(13, 202, 240, 0.05);
+  border: 1px solid rgba(13, 202, 240, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  color: #fff;
+}
+.chart-card h3 {
+  color: #0dcaf0;
+  margin-bottom: 15px;
+}
+.view-stats-btn {
+  margin-bottom: 20px;
+  padding: 10px 18px;
+  background: rgba(13, 202, 240, 0.1);
+  border: 1px solid #0dcaf0;
+  color: #0dcaf0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.view-stats-btn:hover {
+  background: #0dcaf0;
+  color: #000;
+}
+.chart-card {
+  width: 100%;
+  max-width: 100%;
+  background-color: #fff1;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}

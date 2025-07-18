@@ -13,6 +13,7 @@ import MyProfilePage from "./pages/MyProfilePage";
 import AdminUserOrdersPage from "./pages/AdminUserOrdersPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import AdminStatsPage from "./pages/AdminStatsPage";
 
 
 import NavBar from "./components/NavBar";
@@ -78,7 +79,7 @@ function App() {
           <Route path="orders" element={<AdminUserOrdersPage />} />
           <Route path="profile" element={<MyProfilePage />} /> 
           <Route path="about" element={<AboutPage />} />
-          
+          <Route path="stats" element={<AdminStatsPage />} />
 
         </Route>
       </Routes>
