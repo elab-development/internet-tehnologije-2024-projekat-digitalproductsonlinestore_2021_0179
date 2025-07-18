@@ -78,6 +78,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Pregled svih korisnika (samo admin)
     Route::get('/auth/users', [AuthController::class, 'getAllUsers']);
 
-    //Route::get('/admin/purchases-per-category', [OrderController::class, 'getPurchasesPerCategory']);
-
+    Route::get('/admin/purchases-per-category', [OrderController::class, 'getPurchasesPerCategory'])
+        ->middleware('auth:sanctum');
 });

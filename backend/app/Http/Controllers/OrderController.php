@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderCollection;
@@ -50,16 +51,20 @@ class OrderController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'status' => 'required|string|in:pending,completed,cancelled',
-            'notes' => 'nullable|string|max:255',
-            'products' => 'required|array',
-            'products.*.id' => 'required|exists:products,id',
-        ]);
+{
+    $validated = $request->validate([
+        'status' => 'required|string|in:pending,completed,cancelled',
+        'notes' => 'nullable|string|max:255',
+        'products' => 'required|array',
+        'products.*.id' => 'required|exists:products,id',
+    ]);
 
-        $user = Auth::user(); // koristi token da zna ko je korisnik
+    $user = Auth::user();
+    $totalPrice = 0;
 
+    DB::beginTransaction(); 
+
+    try {
         $order = Order::create([
             'status' => $validated['status'],
             'notes' => $validated['notes'] ?? null,
@@ -67,19 +72,22 @@ class OrderController extends Controller
             'total_price' => 0,
         ]);
 
-        $totalPrice = 0;
-
         foreach ($validated['products'] as $product) {
-            $productModel = Product::find($product['id']);
+            $productModel = Product::findOrFail($product['id']);
             $order->products()->attach($productModel->id, ['quantity' => 1]);
-
             $totalPrice += $productModel->price;
         }
 
         $order->update(['total_price' => $totalPrice]);
 
+        DB::commit(); // ✅ Ako sve prođe uspešno
+
         return new OrderResource($order);
+    } catch (\Exception $e) {
+        DB::rollBack(); 
+        return response()->json(['error' => 'Transaction failed', 'message' => $e->getMessage()], 500);
     }
+}
 
 
 
@@ -158,20 +166,30 @@ class OrderController extends Controller
         return \App\Http\Resources\OrderResource::collection($orders);
     }
 
-    public function getPurchasesPerCategory()
+    public function getPurchasesPerCategory(Request $request)
     {
-        if (!Auth::check() || Auth::user()->email !== 'admin@gmail.com') {
+        if (Auth::user()->email !== 'admin@gmail.com') {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
-        $data = DB::table('order_product')
+        $month = $request->input('month'); // npr. 7
+        $year = $request->input('year');   // npr. 2025
+
+        $query = DB::table('order_product')
+            ->join('orders', 'order_product.order_id', '=', 'orders.id')
             ->join('products', 'order_product.product_id', '=', 'products.id')
             ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->select('categories.name', DB::raw('COUNT(order_product.order_id) as total'))
+            ->select('categories.name as category', DB::raw('COUNT(order_product.id) as purchase_count'))
             ->groupBy('categories.name')
-            ->orderByDesc('total')
-            ->get();
-            
-        return response()->json($data);
+            ->orderByDesc('purchase_count');
+
+        if ($month && $year) {
+            $query->whereMonth('orders.created_at', $month)
+                ->whereYear('orders.created_at', $year);
+        } elseif ($year) {
+            $query->whereYear('orders.created_at', $year);
+        }
+
+        return response()->json($query->get());
     }
 }
