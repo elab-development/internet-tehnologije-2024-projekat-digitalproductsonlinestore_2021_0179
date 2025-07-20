@@ -76,5 +76,5 @@ Korisnički nalog (samostalno kreiranje)
 Frontend: ReactJS, Axios, Bootstrap, Recharts
 Backend: Laravel 10, Sanctum, MySQL
 Baza podataka: relacije, transakcije, trigeri
-API integracije: ExchangeRate API, vesti/šale API (dodatna funkcionalnost)
+API integracije: ExchangeRate API, šale API
 
