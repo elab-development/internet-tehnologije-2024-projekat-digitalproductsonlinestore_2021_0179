@@ -39,7 +39,7 @@ const LoginPage = ({ addToken }) => {
 
       .catch((error) => {
         console.log("LOGIN ERROR:", error.response);
-        setErrorMsg("Došlo je do greške prilikom prijave.");
+        setErrorMsg("Error during login. Please try again.");
       })
       .finally(() => setLoading(false));
   };

@@ -85,7 +85,37 @@ const MyProfilePage = () => {
         section.scrollIntoView({ behavior: "smooth" });
       }
     }
+
   }, [location]);
+  useEffect(() => {
+  const token = sessionStorage.getItem("auth_token");
+  if (!token) {
+    navigate("/login");
+    return;
+  }
+
+  axios
+    .get("/api/profile", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((res) => {
+      console.log("API /profile response:", res.data); // 👈 dodaj ovo
+      const user = res.data.user;
+      setUserInfo({
+        name: user.name,
+        email: user.email,
+        phone: "",
+        address: "",
+      });
+    })
+    .catch((err) => {
+      console.error("Failed to load profile", err);
+      navigate("/login");
+    });
+}, []);
+
 
   useEffect(() => {
     axios
